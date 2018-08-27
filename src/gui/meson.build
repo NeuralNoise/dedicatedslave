@@ -6,7 +6,7 @@ d_gui_src = [
 	'source/dedicatedslave/gui/splash.d'
 ]
 
-gtkd_dep = dependency('gtk-d', version:'~>3.8.3', method: 'dub')
+gtkd_dep = dependency('gtk-d:gtkd', version:'>=3.8.3', method: 'dub')
 
 d_gui_exe = executable('dedicatedslave-gui',
 	[d_gui_src],
@@ -15,6 +15,5 @@ d_gui_exe = executable('dedicatedslave-gui',
 		d_dep,
 		gtkd_dep
 	],
-	install: true,
-	version: project_version
+	install: true
 )
