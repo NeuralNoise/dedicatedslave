@@ -10,7 +10,7 @@ DedicatedSlave is a shell tool for bootstrapping game servers
 
 Create, Config and Launch your steam dedicated game server on the fly.
 
-Visit [Website](http://enthdev.github.io/dedicatedslave/) for more information
+Visit [Website](https://dedicatedslave.readthedocs.io/) for more information
 
 * [Getting Started](http://dedicatedslave.readthedocs.io/en/latest/user-guide/gettingstarted/)
 * [Changelog](http://dedicatedslave.readthedocs.io/en/latest/about/release-notes/)
