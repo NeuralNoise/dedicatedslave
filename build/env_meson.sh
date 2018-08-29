@@ -1,10 +1,21 @@
-envvariable=".venv"
+#set -e
+
+function __avirtualenv()
+{
+	virtualenv --python=python3 ".venv";
+	source .venv/bin/activate;
+}
+if [[ -z "$VIRTUAL_ENV" ]]; then; __avirtualenv; fi;
 
 function __cco() {
-	if [ -x "/bin/ldc" ] || [ -x "/usr/bin/ldc" ]; then
-		export DC=ldc;
-	elif [ -x "/bin/dmd" ] || [ -x "/usr/bin/dmd" ]; then
-		export DC=dmd;
+	if output=$(where ldc); then
+		export DC=$((printf '%s\n' "$output") | sed -n 1p);
+	elif output=$(where dmd); then
+		export DC=$((printf '%s\n' "$output") | sed -n 1p);
+	elif output=$(where gdc); then
+		export DC=$((printf '%s\n' "$output") | sed -n 1p);
+	else
+		(>&2 echo "error: no compiler detected!")
 	fi;
 }
 
@@ -12,8 +23,19 @@ function __pdep() {
 	dub build gtk-d:gtkd --compiler=$DC;
 }
 
-echo "Development commands:"
+echo "\nDevelopment commands:"
 function __prepare() {
+	if where meson > /dev/null; then;
+		if [[ -z "$VIRTUAL_ENV" ]]; then; __avirtualenv; fi;
+		mkdir -p .tmp; pushd .tmp;
+		wget "https://github.com/mesonbuild/meson/archive/master.zip";
+		mkdir -p meson;
+		unzip master.zip;
+		rm -rf master.zip;
+		pushd meson-master;
+		python3 setup.py install;
+		popd; popd;
+	fi;
 	__cco; __pdep; meson $@ . .build
 }
 alias p="__prepare"
@@ -51,6 +73,12 @@ function __install() { __build install; }
 alias i="__install"
 echo "i\tInstall"
 
+function __uninstall_env() {
+	source ./${envvariable}/bin/activate;
+	pip uninstall -r requirements.txt -y;
+	deactivate;
+}
+
 function __start() { ./.build/src/gui/dedicatedslave-$@ }
 alias s="__start"
 echo "s\tStart"
@@ -61,7 +89,8 @@ echo "sd\tStart Debug"
 echo "\nQuick commands:"
 alias breakfast="__prepare"
 echo "breakfast\tPrepare"
-function brunch() {
+
+function lunch() {
 	if [[ $@ == "clear" ]]; then
 		__clear all;
 	else
@@ -71,4 +100,6 @@ function brunch() {
 		__build $@;
 	fi;
 }
-echo "brunch\t\tEasy prepare & build"
+echo "lunch\t\tEasy prepare & build"
+
+alias brunch="breakfast; lunch"
