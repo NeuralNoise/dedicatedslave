@@ -23,6 +23,7 @@ __dummy.html
 # Code coverage
 *.lst
 
+.venv/
 .out/
 .build/
 .dedicatedslave/
