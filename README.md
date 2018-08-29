@@ -18,7 +18,7 @@ Visit [Website](https://dedicatedslave.readthedocs.io/) for more information
 ***
 
 ## How to install
-- clone the repo: `git clone https://github.com/EnthDev/dedicatedslave.git`
+- clone the repo: `git clone https://gitlab.com/enthdev/dedicatedslave.git`
 - prepare the environment: `source build/env.sh`
 - install everything: `brunch install`
 
