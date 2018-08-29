@@ -1,5 +1,17 @@
 envvariable=".venv"
 
+envvariable=".venv"
+
+function i() { virtualenv --python=python3 "${envvariable}"; source ./${envvariable}/bin/activate; pip install -r requirements.txt; deactivate;}
+function s() {  }
+function ui() { source ./${envvariable}/bin/activate; pip uninstall -r requirements.txt -y; deactivate; }
+
+echo "Help:"
+echo "‘s’ - Start"
+echo "‘i’ - Install"
+echo "‘c’ - Clean"
+echo "‘ca’ - Clean Database"
+
 function __cco() {
 	if [ -x "/bin/ldc" ] || [ -x "/usr/bin/ldc" ]; then
 		export DC=ldc;
@@ -14,6 +26,7 @@ function __pdep() {
 
 echo "Development commands:"
 function __prepare() {
+	source ./${envvariable}/bin/activate; python3 -m "${pymodulename}"; deactivate;
 	__cco; __pdep; meson $@ . .build
 }
 alias p="__prepare"
