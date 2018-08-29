@@ -4,9 +4,12 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "gui",
+			"label": "build gui",
 			"type": "shell",
-			"command": "dub build :gui",
+			"command": "ninja src/gui/dedicatedslave-gui",
+			"options": {
+				"cwd": "${workspaceRoot}/.build"
+			},
 			"problemMatcher": [],
 			"group": {
 				"kind": "build",

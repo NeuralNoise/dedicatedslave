@@ -5,11 +5,11 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "gui-debug",
+			"name": "dedicatedslave-gui",
 			"type": "gdb",
-			"preLaunchTask": "gui",
+			"preLaunchTask": "build gui",
 			"request": "launch",
-			"target": "./src/gui/.out/bin/dedicatedslave-gui",
+			"target": "./.build/src/gui/dedicatedslave-gui",
 			"cwd": "${workspaceRoot}"
 		}
 	]
