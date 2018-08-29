@@ -14,21 +14,27 @@ function __pdep() {
 
 echo "Development commands:"
 function __prepare() {
-	__clear; __cco; __pdep; meson $@ . .build
+	__cco; __pdep; meson $@ . .build
 }
 alias p="__prepare"
 echo "p\tPrepare"
 
 function __clear() {
-	__build clean;
 	if [[ $@ == "all" ]]; then
-		rm -rf .build .dub .dedicatedslave ._dedicatedslave;
+		rm -rf .build .dub;
+	elif [[ $@ == "appcache" ]]; then
+		rm -rf .dedicatedslave ._dedicatedslave;
+	else
+		__build clean;
 	fi;
 }
 alias c="__clear"
 echo "c\tClear"
 
 function __build() {
+	if [[ ! -d ".build" ]]; then
+		(>&2 echo "error: no .build folder")
+	fi;
 	if [[ $@ == "force" ]]; then
 		pushd .build;
 			ninja clean;
@@ -56,9 +62,13 @@ echo "\nQuick commands:"
 alias breakfast="__prepare"
 echo "breakfast\tPrepare"
 function brunch() {
-	if [[ ! -d ".build" ]];then
-		__prepare;
+	if [[ $@ == "clear" ]]; then
+		__clear all;
+	else
+		if [[ ! -d ".build" ]];then
+			__prepare;
+		fi;
+		__build $@;
 	fi;
-	__build $@;
 }
 echo "brunch\t\tEasy prepare & build"
