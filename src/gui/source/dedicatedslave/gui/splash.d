@@ -13,6 +13,24 @@ import core.time;
 import core.thread;
 import dedicatedslave.loader;
 
+private class GUILoader : Loader {
+	this(ref Label lbl, ref ProgressBar pb)
+	{
+		this._lbl = lbl;
+		this._pb = pb;
+		super();
+	}
+
+	override void _internalLogger(immutable string msg)
+	{
+		_pb.pulse();
+		_lbl.setText(msg);
+	}
+private:
+	Label _lbl;
+	ProgressBar _pb;
+}
+
 class SplashWindow : ApplicationWindow {
 	this(Application application)
 	{
@@ -38,7 +56,7 @@ class SplashWindow : ApplicationWindow {
 		showAll();
 
 		MonoTime timeBefore = MonoTime.currTime;
-		new Loader();
+		new GUILoader(statusLbl, pb);
 		MonoTime timeAfter = MonoTime.currTime;
 		Duration timeElapsed = timeAfter - timeBefore;
 
