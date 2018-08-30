@@ -21,11 +21,12 @@ function __cco() {
 
 function __pdep() {
 	dub build gtk-d:gtkd --compiler=$DC;
+	dub build archive --compiler=$DC;
 }
 
 echo "\nDevelopment commands:"
 function __prepare() {
-	if where meson > /dev/null; then;
+	if ! where meson > /dev/null; then;
 		if [[ -z "$VIRTUAL_ENV" ]]; then; __avirtualenv; fi;
 		mkdir -p .tmp; pushd .tmp;
 		wget "https://github.com/mesonbuild/meson/archive/master.zip";
