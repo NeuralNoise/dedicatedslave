@@ -12,6 +12,3 @@ echo "Help:"
 echo "‘b’ - Build"
 echo "‘bf’ - Build (Force)"
 echo "‘s’ - Start"
-
-#dub
-#ldc

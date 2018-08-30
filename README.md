@@ -27,6 +27,7 @@ Visit [Website](https://dedicatedslave.readthedocs.io/) for more information
 - [DUB](https://code.dlang.org/), the D package registry
 - A [D Compiler](https://dlang.org/download.html)
 - [GTK+](https://www.gtk.org/) (for graphical user interface)
+- lib32gcc1
 
 ## Support
 
