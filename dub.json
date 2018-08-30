@@ -13,5 +13,8 @@
 	"subPackages": [
 		"src/gui",
 		"src/cli"
-	]
+	],
+	"dependencies": {
+		"archive": "~>0.6.0"
+	}
 }
