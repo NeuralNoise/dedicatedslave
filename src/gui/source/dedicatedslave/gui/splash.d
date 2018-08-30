@@ -6,6 +6,7 @@ import gtk.ApplicationWindow;
 import gtk.ProgressBar;
 import gtk.Box;
 import gtk.Label;
+import gtk.Main;
 import gdk.RGBA;
 import glib.Timeout;
 import std.stdio;
@@ -37,6 +38,9 @@ class SplashWindow : ApplicationWindow {
 		super(application);
 
 		setTitle("DedicatedSlave");
+		setTypeHint(GdkWindowTypeHint.SPLASHSCREEN);
+		setSkipTaskbarHint(true);
+		setSkipPagerHint(true);
 		overrideBackgroundColor(GtkStateFlags.NORMAL, new RGBA(1.0, 1.0,1.0));
 		setBorderWidth(10);
 		setDecorated(false);
@@ -55,10 +59,16 @@ class SplashWindow : ApplicationWindow {
 
 		showAll();
 
-		MonoTime timeBefore = MonoTime.currTime;
-		new GUILoader(statusLbl, pb);
-		MonoTime timeAfter = MonoTime.currTime;
-		Duration timeElapsed = timeAfter - timeBefore;
+		Duration timeElapsed;
+		auto _t = new Thread({
+			MonoTime timeBefore = MonoTime.currTime;
+			new GUILoader(statusLbl, pb);
+			MonoTime timeAfter = MonoTime.currTime;
+			timeElapsed = timeAfter - timeBefore;
+		}).start;
+
+		while(_t.isRunning)
+			if(Main.eventsPending) Main.iteration;
 
 		if(timeElapsed.total!"msecs" >= 1000)
 			destroy();

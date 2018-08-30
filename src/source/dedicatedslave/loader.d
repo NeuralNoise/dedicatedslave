@@ -38,16 +38,16 @@ class Loader {
 			import std.stdio: writeln;
 
 			auto archive_file = new TarGzArchive(read(steamcmd_filename));
-			archive_file.getDirectory("");
 			mkdir(_tmpPath~"steamcmd/");
+
 			foreach (memberFile; archive_file.directories)
 			{
 				_changeLogState("Create directory " ~ memberFile.path ~ "...");
 				mkdir(_tmpPath~"steamcmd/"~memberFile.path);
 				_changeLogState("Set attributes for " ~ memberFile.path ~ "...");
 				setAttributes(_tmpPath~"steamcmd/"~memberFile.path, memberFile.permissions);
-
 			}
+
 			foreach (memberFile; archive_file.files)
 			{
 				_changeLogState("Extracting " ~ memberFile.path ~ "...");
