@@ -1,14 +1,15 @@
 module dedicatedslave.steamapi;
 
 import DedicatedSlave = dedicatedslave;
+import dedicatedslave.loader;
 
 import core.thread;
 import std.process;
 
 class SteamAPI {
-	this(void delegate(immutable(string)) funcChangeLogState)
+	this(Loader loader)
 	{
-		_changeLogState = funcChangeLogState;
+		_loader = loader;
 		_thread_handler = new Thread(&createNewProcess).start();
 	}
 
@@ -18,14 +19,14 @@ private:
 
 	Thread _thread_handler;
 
-	void delegate(immutable(string)) _changeLogState;
+	Loader _loader;
 
 	void createNewProcess()
 	{
-		pipeproc_handler = pipeShell(DedicatedSlave.realPath~"steamcmd/"~DedicatedSlave.execPathPlatform~DedicatedSlave.execFilePlatform, Redirect.all, ["LD_LIBRARY_PATH":DedicatedSlave.realPath~"steamcmd/"~DedicatedSlave.execPathPlatform]);
+		pipeproc_handler = pipeShell(_loader.exe_path~DedicatedSlave.realPath~"steamcmd/"~DedicatedSlave.execPathPlatform~DedicatedSlave.execFilePlatform, Redirect.all, ["LD_LIBRARY_PATH":_loader.exe_path~DedicatedSlave.realPath~"steamcmd/"~DedicatedSlave.execPathPlatform]);
 		scope(exit) wait(pipeproc_handler.pid);
 
-		foreach (line; pipeproc_handler.stdout.byLine) _changeLogState(line.idup);
-		foreach (line; pipeproc_handler.stderr.byLine) _changeLogState(line.idup);
+		foreach (line; pipeproc_handler.stdout.byLine) _loader._changeLogState(line.idup);
+		foreach (line; pipeproc_handler.stderr.byLine) _loader._changeLogState(line.idup);
 	}
 }
