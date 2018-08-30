@@ -12,25 +12,7 @@ import glib.Timeout;
 import std.stdio;
 import core.time;
 import core.thread;
-import dedicatedslave.loader;
-
-private class GUILoader : Loader {
-	this(ref Label lbl, ref ProgressBar pb)
-	{
-		this._lbl = lbl;
-		this._pb = pb;
-		super();
-	}
-
-	override void _internalLogger(immutable string msg)
-	{
-		_pb.pulse();
-		_lbl.setText(msg);
-	}
-private:
-	Label _lbl;
-	ProgressBar _pb;
-}
+import dedicatedslave.gui.loader;
 
 class SplashWindow : ApplicationWindow {
 	this(Application application)
@@ -62,7 +44,7 @@ class SplashWindow : ApplicationWindow {
 		Duration timeElapsed;
 		auto _t = new Thread({
 			MonoTime timeBefore = MonoTime.currTime;
-			new GUILoader(statusLbl, pb);
+			loader = new GUILoader(statusLbl, pb);
 			MonoTime timeAfter = MonoTime.currTime;
 			timeElapsed = timeAfter - timeBefore;
 		}).start;
@@ -80,4 +62,6 @@ class SplashWindow : ApplicationWindow {
 				return false;
 			});
 	}
+
+	GUILoader loader;
 }

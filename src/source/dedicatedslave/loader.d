@@ -1,35 +1,31 @@
 module dedicatedslave.loader;
 
 import std.file;
-import core.thread;
-import std.process;
+import dedicatedslave.steamapi;
+import DedicatedSlave = dedicatedslave;
 
 class Loader {
 	this() {
-		if(!exists(_realPath))
+		if(!exists(DedicatedSlave.realPath))
 			installEnvironment();
+
+		steamapi_instance = new SteamAPI(&_changeLogState);
 	}
 
 	void installEnvironment()
 	{
 		_changeLogState("Installing the environment...");
-		import std.json : JSONValue, parseJSON;
-		immutable JSONValue envconfig = parseJSON(cast(string)read("assets/envconfig.json"));
-		if(exists(_tmpPath))
-			rmdirRecurse(_tmpPath);
-		mkdir(_tmpPath);
 
-		version(Windows) enum os_version = "windows";
-		else version(linux) enum os_version = "linux";
-		else version(OSX) enum os_version = "macos";
-		immutable string url = envconfig[os_version].str;
+		if(exists(DedicatedSlave.tmpPath))
+			rmdirRecurse(DedicatedSlave.tmpPath);
+		mkdir(DedicatedSlave.tmpPath);
 
-		_changeLogState("Downloading " ~ url ~ "...");
+		_changeLogState("Downloading " ~ DedicatedSlave.urlPlatform ~ "...");
 		import std.net.curl : download;
 		import std.path : extension;
-		immutable string steamcmd_extension = extension(url);
-		immutable string steamcmd_filename = _tmpPath~"steamcmd"~extension(url);
-		download(url, steamcmd_filename);
+		immutable string steamcmd_extension = extension(DedicatedSlave.urlPlatform);
+		immutable string steamcmd_filename = DedicatedSlave.tmpPath~"steamcmd"~extension(DedicatedSlave.urlPlatform);
+		download(DedicatedSlave.urlPlatform, steamcmd_filename);
 		
 		_changeLogState("Extracting " ~ steamcmd_filename ~ "...");
 		if(steamcmd_extension == ".gz")
@@ -38,39 +34,32 @@ class Loader {
 			import std.stdio: writeln;
 
 			auto archive_file = new TarGzArchive(read(steamcmd_filename));
-			mkdir(_tmpPath~"steamcmd/");
+			mkdir(DedicatedSlave.tmpPath~"steamcmd/");
 
 			foreach (memberFile; archive_file.directories)
 			{
 				_changeLogState("Create directory " ~ memberFile.path ~ "...");
-				mkdir(_tmpPath~"steamcmd/"~memberFile.path);
+				mkdir(DedicatedSlave.tmpPath~"steamcmd/"~memberFile.path);
 				_changeLogState("Set attributes for " ~ memberFile.path ~ "...");
-				setAttributes(_tmpPath~"steamcmd/"~memberFile.path, memberFile.permissions);
+				setAttributes(DedicatedSlave.tmpPath~"steamcmd/"~memberFile.path, memberFile.permissions);
 			}
 
 			foreach (memberFile; archive_file.files)
 			{
 				_changeLogState("Extracting " ~ memberFile.path ~ "...");
-				write(_tmpPath~"steamcmd/"~memberFile.path, memberFile.data);
+				write(DedicatedSlave.tmpPath~"steamcmd/"~memberFile.path, memberFile.data);
 				_changeLogState("Set attributes for " ~ memberFile.path ~ "...");
-				setAttributes(_tmpPath~"steamcmd/"~memberFile.path, memberFile.permissions);
+				setAttributes(DedicatedSlave.tmpPath~"steamcmd/"~memberFile.path, memberFile.permissions);
 			}
 		}
 		_changeLogState("Delete "~steamcmd_filename~"...");
 		remove(steamcmd_filename);
 
 		_changeLogState("Finishing setup...");
-		rename(_tmpPath, _realPath);
-
-		
-		_exec_thread = new Thread({
-			_exec_proc = pipeShell(_realPath~"steamcmd/"~"steamcmd"~_execExtension);
-			scope(exit) wait(_exec_proc.pid);
-
-			foreach (line; _exec_proc.stdout.byLine) _changeLogState(line.idup);
-			foreach (line; _exec_proc.stderr.byLine) _changeLogState(line.idup);
-		}).start();
+		rename(DedicatedSlave.tmpPath, DedicatedSlave.realPath);
 	}
+
+	SteamAPI steamapi_instance;
 
 protected:
 	void _internalLogger(immutable string msg) {}
@@ -82,14 +71,4 @@ private:
 		info(msg);
 		_internalLogger(msg);
 	}
-
-	Thread _exec_thread;
-	ProcessPipes _exec_proc;
-
-	enum {
-		_tmpPath = "._dedicatedslave/",
-		_realPath = ".dedicatedslave/"
-	}
-
-	version(linux) enum _execExtension = ".sh";
 }

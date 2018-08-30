@@ -1,7 +1,8 @@
 d_inc = include_directories('source')
 
 d_src = [
-	'source/dedicatedslave/loader.d'
+	'source/dedicatedslave/loader.d',
+	'source/dedicatedslave/steamapi.d'
 ]
 
 install_subdir('source/dedicatedslave/', install_dir: 'include/d/dedicatedslave/')
