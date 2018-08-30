@@ -46,7 +46,7 @@ function __clear() {
 	if [[ $@ == "all" ]]; then
 		rm -rf .build .dub;
 	elif [[ $@ == "appcache" ]]; then
-		rm -rf .dedicatedslave ._dedicatedslave;
+		rm -rf .build/src/gui/.dedicatedslave .build/src/gui/._dedicatedslave;
 	else
 		__build clean;
 	fi;
