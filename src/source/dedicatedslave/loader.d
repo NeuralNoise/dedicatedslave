@@ -52,20 +52,20 @@ class Loader {
 
 	void installEnvironment()
 	{
-		_changeLogState("Installing the environment...");
+		changeLogState("Installing the environment...");
 
 		if(exists(exe_path~DedicatedSlave.tmpPath))
 			rmdirRecurse(exe_path~DedicatedSlave.tmpPath);
 		mkdir(exe_path~DedicatedSlave.tmpPath);
 
-		_changeLogState("Downloading " ~ DedicatedSlave.urlPlatform ~ "...");
+		changeLogState("Downloading " ~ DedicatedSlave.urlPlatform ~ "...");
 		import std.net.curl : download;
 		import std.path : extension;
 		immutable string steamcmd_extension = extension(DedicatedSlave.urlPlatform);
 		immutable string steamcmd_filename = exe_path~DedicatedSlave.tmpPath~"steamcmd"~extension(DedicatedSlave.urlPlatform);
 		download(DedicatedSlave.urlPlatform, steamcmd_filename);
 		
-		_changeLogState("Extracting " ~ steamcmd_filename ~ "...");
+		changeLogState("Extracting " ~ steamcmd_filename ~ "...");
 		if(steamcmd_extension == ".gz")
 		{
 			import archive.targz;
@@ -76,38 +76,33 @@ class Loader {
 
 			foreach (memberFile; archive_file.directories)
 			{
-				_changeLogState("Create directory " ~ memberFile.path ~ "...");
+				changeLogState("Create directory " ~ memberFile.path ~ "...");
 				mkdir(exe_path~DedicatedSlave.tmpPath~"steamcmd/"~memberFile.path);
-				_changeLogState("Set attributes for " ~ memberFile.path ~ "...");
+				changeLogState("Set attributes for " ~ memberFile.path ~ "...");
 				setAttributes(exe_path~DedicatedSlave.tmpPath~"steamcmd/"~memberFile.path, memberFile.permissions);
 			}
 
 			foreach (memberFile; archive_file.files)
 			{
-				_changeLogState("Extracting " ~ memberFile.path ~ "...");
+				changeLogState("Extracting " ~ memberFile.path ~ "...");
 				write(exe_path~DedicatedSlave.tmpPath~"steamcmd/"~memberFile.path, memberFile.data);
-				_changeLogState("Set attributes for " ~ memberFile.path ~ "...");
+				changeLogState("Set attributes for " ~ memberFile.path ~ "...");
 				setAttributes(exe_path~DedicatedSlave.tmpPath~"steamcmd/"~memberFile.path, memberFile.permissions);
 			}
 		}
-		_changeLogState("Delete "~steamcmd_filename~"...");
+		changeLogState("Delete "~steamcmd_filename~"...");
 		remove(steamcmd_filename);
 
-		_changeLogState("Finishing setup...");
+		changeLogState("Finishing setup...");
 		rename(exe_path~DedicatedSlave.tmpPath, exe_path~DedicatedSlave.realPath);
 	}
 
 	SteamAPI steamapi_instance;
 	string exe_path;
 
-protected:
-	void _internalLogger(immutable string msg) {}
-
-private:
-	package final void _changeLogState(immutable string msg)
+	package void changeLogState(immutable string msg)
 	{
 		import std.experimental.logger : info;
 		info(msg);
-		_internalLogger(msg);
 	}
 }

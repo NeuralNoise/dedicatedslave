@@ -12,8 +12,9 @@ class GUILoader : Loader {
 		super();
 	}
 
-	override void _internalLogger(immutable string msg)
+	override void changeLogState(immutable string msg)
 	{
+		super.changeLogState(msg);
 		if(_pb !is null) _pb.pulse();
 		if(_lbl !is null) _lbl.setText(msg);
 	}
