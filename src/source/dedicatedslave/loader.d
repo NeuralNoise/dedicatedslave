@@ -1,49 +1,14 @@
 module dedicatedslave.loader;
 
 import std.file;
+import std.path;
 import dedicatedslave.steamapi;
 import DedicatedSlave = dedicatedslave;
 
 class Loader {
-	this() {
-		{
-			version(Windows) {
-				import std.c.windows.windows;
-			} else version(OSX) {
-				extern(C) int _NSGetExecutablePath(char* buf, uint* bufsize);
-			} else version(linux) {
-				 import core.sys.posix.unistd : readlink;
-			} else {
-				static assert(0);
-			}
-			import std.conv;
-			import std.string;
-			import std.path;
-
-			static string cachedExecutablePath;
-			if (!cachedExecutablePath) {
-				char[4096] buf;
-				long filePathLength;
-		
-				version(Windows) {
-					filePathLength = GetModuleFileNameA(null, buf.ptr, buf.length - 1);
-					assert(filePathLength != 0);
-				}
-				else version(OSX) {
-					filePathLength = cast(long) (buf.length - 1);
-					int res = _NSGetExecutablePath(buf.ptr, &filePathLength);
-					assert(res == 0);
-				}
-				else version(linux) {
-					filePathLength = readlink(toStringz("/proc/self/exe"), buf.ptr, buf.length - 1);
-				}
-				else {
-					static assert(0);
-				}
-				cachedExecutablePath = to!string(buf[0 .. filePathLength]);
-			}
-			exe_path = cachedExecutablePath.dirName ~ "/";
-		}
+	this()
+	{
+		exe_path = thisExePath.dirName ~ "/";
 		if(!exists(exe_path~DedicatedSlave.realPath))
 			installEnvironment();
 
@@ -97,12 +62,12 @@ class Loader {
 		rename(exe_path~DedicatedSlave.tmpPath, exe_path~DedicatedSlave.realPath);
 	}
 
-	SteamAPI steamapi_instance;
-	string exe_path;
-
-	package void changeLogState(immutable string msg)
+	void changeLogState(immutable string msg)
 	{
 		import std.experimental.logger : info;
 		info(msg);
 	}
+
+	SteamAPI steamapi_instance;
+	string exe_path;
 }

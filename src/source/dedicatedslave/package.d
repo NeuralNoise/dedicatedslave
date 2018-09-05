@@ -14,5 +14,7 @@ else version(windows) enum {
 		urlPlatform = "https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip"
 	}
 else version(OSX) enum {
+		execPathPlatform = "osx/",
+		execFilePlatform = "steamcmd",
 		urlPlatform = "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_osx.tar.gz"
 	}
