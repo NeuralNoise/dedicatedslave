@@ -151,7 +151,8 @@ class MainWindow : ApplicationWindow
 		terminalTextView.setMonospace(true);
 		terminalTextView.setWrapMode(GtkWrapMode.WORD_CHAR);
 		loader.changeLogCallback(delegate(immutable string msg) {
-			terminalTextView.appendText(msg~"\n");
+			import glib.Idle;
+			new Idle({terminalTextView.appendText(msg~"\n"); return false;}, GPriority.DEFAULT_IDLE, true);
 		});
 		ListBox listBox = new ListBox();
 
