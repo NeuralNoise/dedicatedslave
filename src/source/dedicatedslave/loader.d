@@ -2,7 +2,6 @@ module dedicatedslave.loader;
 
 import std.file;
 import std.path;
-import dedicatedslave.steamapi;
 import DedicatedSlave = dedicatedslave;
 
 class Loader {
@@ -11,8 +10,6 @@ class Loader {
 		exe_path = thisExePath.dirName ~ "/";
 		if(!exists(exe_path~DedicatedSlave.realPath))
 			installEnvironment();
-
-		steamapi_instance = new SteamAPI(this);
 	}
 
 	void installEnvironment()
@@ -68,6 +65,5 @@ class Loader {
 		info(msg);
 	}
 
-	SteamAPI steamapi_instance;
 	string exe_path;
 }

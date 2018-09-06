@@ -5,24 +5,23 @@ import gtk.Label;
 import gtk.ProgressBar;
 
 class GUILoader : Loader {
-	this(ref Label lbl, ref ProgressBar pb)
+	this(void delegate(immutable string) func)
 	{
-		this._lbl = lbl;
-		this._pb = pb;
+		_func = func;
 		super();
 	}
 
 	override void changeLogState(immutable string msg)
 	{
 		super.changeLogState(msg);
-		if(_pb !is null) _pb.pulse();
-		if(_lbl !is null) _lbl.setText(msg);
+		_func(msg);
 	}
 
-	@property void label(ref Label lbl) { _lbl = lbl;}
-	@property void progressBar(ref ProgressBar pb) { _pb = pb;}
+	final void changeLogCallback(void delegate(immutable string) func)
+	{
+		_func = func;
+	}
 
 private:
-	Label _lbl;
-	ProgressBar _pb;
+	void delegate(immutable string) _func;
 }

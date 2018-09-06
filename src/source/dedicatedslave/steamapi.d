@@ -11,6 +11,7 @@ class SteamAPI {
 	{
 		_loader = loader;
 		_thread_handler = new Thread(&createNewProcess).start();
+		//createNewProcess();
 	}
 
 	ProcessPipes pipeproc_handler;

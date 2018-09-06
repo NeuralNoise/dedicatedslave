@@ -15,6 +15,7 @@ import gtk.TextView;
 import gtk.Toolbar;
 import gtk.Statusbar;
 import gtk.Notebook;
+import gtk.ScrolledWindow;
 import gdk.Event;
 import dedicatedslave.gui.loader;
 
@@ -120,6 +121,10 @@ class MainWindow : ApplicationWindow
 	this(Application application, ref GUILoader loader)
 	{
 		super(application);
+
+		import dedicatedslave.steamapi;
+		SteamAPI steamapi_instance = new SteamAPI(loader);
+
 		setTitle("DedicatedSlave");
 		setDefaultSize(800, 600);
 
@@ -131,24 +136,39 @@ class MainWindow : ApplicationWindow
 		menuBar.append(new HelpMenuItem());
 
 		Toolbar toolbar = new Toolbar();
+		Statusbar statusbar = new Statusbar();
+
 		Box box = new Box(Orientation.VERTICAL, 10);
-		Box hbox = new Box(Orientation.HORIZONTAL, 10);
-		Box left_vbox = new Box(Orientation.VERTICAL, 10);
-		Box right_vbox = new Box(Orientation.VERTICAL, 10);
 		box.packStart(menuBar, false, false, 0);
 		box.packStart(toolbar, false, false, 0);
-		hbox.setBorderWidth(8);
-		TextView terminalTextView = new TextView();
-		ListBox listBox = new ListBox();
-		left_vbox.packStart(terminalTextView, true, true, 0);
-		left_vbox.packStart(listBox, true, true, 0);
-		hbox.packStart(left_vbox, true, true, 0);
-		Notebook tabController = new Notebook();
-		right_vbox.packStart(tabController, true, true, 0);
-		hbox.packStart(right_vbox, true, true, 0);
-		box.packStart(hbox, true, true, 0);
-		Statusbar statusbar = new Statusbar();
 		box.packStart(statusbar, false, false, 0);
+
+		Box hbox = new Box(Orientation.HORIZONTAL, 10);
+		hbox.setBorderWidth(8);
+
+		TextView terminalTextView = new TextView();
+		terminalTextView.setEditable(false);
+		terminalTextView.setMonospace(true);
+		terminalTextView.setWrapMode(GtkWrapMode.WORD_CHAR);
+		loader.changeLogCallback(delegate(immutable string msg) {
+			terminalTextView.appendText(msg~"\n");
+		});
+		ListBox listBox = new ListBox();
+
+		Box left_vbox = new Box(Orientation.VERTICAL, 10);
+		left_vbox.packStart(new ScrolledWindow(terminalTextView), true, true, 0);
+		left_vbox.packStart(listBox, true, true, 0);
+
+		hbox.packStart(left_vbox, true, true, 0);
+		
+		Notebook tabController = new Notebook();
+
+		Box right_vbox = new Box(Orientation.VERTICAL, 10);
+		right_vbox.packStart(tabController, true, true, 0);
+		
+		hbox.packStart(right_vbox, true, true, 0);
+
+		box.packStart(hbox, true, true, 0);
 		add(box);
 
 		showAll();
