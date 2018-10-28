@@ -9,6 +9,30 @@ a
 
 ## Installation
 
+Dependencies:
+
+* [DUB](https://code.dlang.org/), the D package registry
+    * Windows: [dub](https://chocolatey.org/packages/dub)
+* A [D Compiler](https://dlang.org/download.html)
+    * ldc
+        * Windows: [ldc](https://chocolatey.org/packages/ldc)
+    * dmd
+- [GTK+](https://www.gtk.org/) (for graphical user interface)
+- lib32gcc1
+
+### Ubuntu:
+
+- clone the repo: `git clone https://gitlab.com/enthdev/dedicatedslave.git`
+- prepare the environment: `source build/env.sh`
+- install everything: `brunch install`
+
+### Windows:
+
+Run the following command from an elevated command shell.
+https://gtkd.org/Downloads/runtime/gtk3-runtime_3.22.24-1_64bit.exe
+
+Chocolatey: [dub](https://chocolatey.org/packages/dub), [~~dmd~~](https://chocolatey.org/packages/dmd), [ldc](https://chocolatey.org/packages/ldc)
+
 First install development tools:
 
 * Qt Creator ([pacman](https://www.archlinux.org/packages/?name=qtcreator))
@@ -24,6 +48,32 @@ source env.sh
 > If you can't use yarn for some reason
 
 ***
+
+## Documentation
+
+* https://github.com/gtkd-developers/GtkD/tree/master/demos/gtkD
+* https://developer.gnome.org/gtk3/stable/
+* https://api.gtkd.org/gtkd/gtk/MainWindow.html
+* https://sites.google.com/site/gtkdtutorial/
+* https://archive.dpldocs.info/archive.html
+* https://developer.gnome.org/icon-naming-spec/
+* https://specifications.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
+* https://developer.gnome.org/gtk3/stable/gtk3-Stock-Items.html
+* https://developer.gnome.org/gtk3/stable/gtk3-Themeable-Stock-Images.html
+
+## Roadmap
+
+* Game Instances Custom Options
+  * CSGO
+    * ESL Config
+    * Plugins
+      * Zombies
+* Config
+* Verify if any folder exist and is not in db
+* Update system
+* Documentation (Doxygen ??)
+* Colors Output Stdout
+
 
 ## Build
 
