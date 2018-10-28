@@ -29,6 +29,29 @@ Visit [Website](https://dedicatedslave.readthedocs.io/) for more information
 - [GTK+](https://www.gtk.org/) (for graphical user interface)
 - lib32gcc1
 
+## ..
+
+* https://github.com/gtkd-developers/GtkD/tree/master/demos/gtkD
+* https://developer.gnome.org/gtk3/stable/
+* https://api.gtkd.org/gtkd/gtk/MainWindow.html
+* https://sites.google.com/site/gtkdtutorial/
+* https://archive.dpldocs.info/archive.html
+* https://developer.gnome.org/icon-naming-spec/
+* https://specifications.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
+* https://developer.gnome.org/gtk3/stable/gtk3-Stock-Items.html
+* https://developer.gnome.org/gtk3/stable/gtk3-Themeable-Stock-Images.html
+
+## Chocolatey
+
+Run the following command from an elevated command shell.
+
+* [dub](https://chocolatey.org/packages/dub)
+* [dmd](https://chocolatey.org/packages/dmd)
+* [ldc](https://chocolatey.org/packages/ldc)
+
+
+https://gtkd.org/Downloads/runtime/gtk3-runtime_3.22.24-1_64bit.exe
+
 ## Support
 
 Creating this app takes a lot of time. Unlike others softwares,

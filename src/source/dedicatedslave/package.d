@@ -1,8 +1,8 @@
 module dedicatedslave;
 
 enum {
-	tmpPath = "._dedicatedslave/",
-	realPath = ".dedicatedslave/"
+	tmpPath = "._dedicatedslave\\",
+	realPath = ".dedicatedslave\\"
 }
 
 version(linux) enum {
@@ -10,7 +10,9 @@ version(linux) enum {
 		execFilePlatform = "steamcmd",
 		urlPlatform = "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz"
 	}
-else version(windows) enum {
+else version(Windows) enum {
+		execPathPlatform = "\\",
+		execFilePlatform = "steamcmd.exe",
 		urlPlatform = "https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip"
 	}
 else version(OSX) enum {
