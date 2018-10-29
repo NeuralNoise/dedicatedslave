@@ -1,5 +1,7 @@
 # Support
 
+You can support us
+
 ---
 
 ## Maintenance team

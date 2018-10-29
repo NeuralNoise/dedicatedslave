@@ -1,65 +1,87 @@
 # Developer Guide
 
-![DedicatedSlave Dev Screen 01](../img/devscreen_01.png)
+This is a guide for who want to dev
 
-![Flow Diagram](../img/flowdiagram.png)
-a   
-
-***
+---
 
 ## Installation
 
 Dependencies:
 
 * [DUB](https://code.dlang.org/), the D package registry
-    * Windows: [dub](https://chocolatey.org/packages/dub)
 * A [D Compiler](https://dlang.org/download.html)
-    * ldc
-        * Windows: [ldc](https://chocolatey.org/packages/ldc)
-    * dmd
-- [GTK+](https://www.gtk.org/) (for graphical user interface)
-- lib32gcc1
+* [GTK+](https://www.gtk.org/) (for graphical user interface)
 
-### Ubuntu:
+### Ubuntu
 
-- clone the repo: `git clone https://gitlab.com/enthdev/dedicatedslave.git`
-- prepare the environment: `source build/env.sh`
-- install everything: `brunch install`
+1. Using git, clone the repository
 
-### Windows:
-
-Run the following command from an elevated command shell.
-https://gtkd.org/Downloads/runtime/gtk3-runtime_3.22.24-1_64bit.exe
-
-Chocolatey: [dub](https://chocolatey.org/packages/dub), [~~dmd~~](https://chocolatey.org/packages/dmd), [ldc](https://chocolatey.org/packages/ldc)
-
-First install development tools:
-
-* Qt Creator ([pacman](https://www.archlinux.org/packages/?name=qtcreator))
-
-Clone the repo via git:
-
-```bash
-git clone --depth=1 https://github.com/EnthDev/dedicatedslave.git dedicatedslave
-cd dedicatedslave
-source env.sh
+```
+git clone --depth=1 https://gitlab.com/enthdev/dedicatedslave.git dedicatedslave
 ```
 
-> If you can't use yarn for some reason
+### Windows
 
-***
+> You better know what you are doing !!!
 
-## Documentation
+1. Using an elevated cmd or powershell command shell, install [dub](https://chocolatey.org/packages/dub), [~~dmd~~](https://chocolatey.org/packages/dmd), [ldc](https://chocolatey.org/packages/ldc) via chocolatey.
 
-* https://github.com/gtkd-developers/GtkD/tree/master/demos/gtkD
-* https://developer.gnome.org/gtk3/stable/
-* https://api.gtkd.org/gtkd/gtk/MainWindow.html
-* https://sites.google.com/site/gtkdtutorial/
-* https://archive.dpldocs.info/archive.html
-* https://developer.gnome.org/icon-naming-spec/
-* https://specifications.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
-* https://developer.gnome.org/gtk3/stable/gtk3-Stock-Items.html
-* https://developer.gnome.org/gtk3/stable/gtk3-Themeable-Stock-Images.html
+```
+choco install dub ldc
+```
+
+2. Download GtkD Gtk3 Runtime from [here](https://gtkd.org/Downloads/runtime/gtk3-runtime_3.22.24-1_64bit.exe) and install it.
+3. Using [Git bash](https://git-scm.com/downloads) or other git compatible shell, clone the repository
+
+```
+git clone --depth=1 https://gitlab.com/enthdev/dedicatedslave.git dedicatedslave
+```
+
+## Build
+
+### Windows
+
+```bash
+cd dedicatedslave
+call build\env.cmd db
+```
+
+### Unix
+
+```bash
+cd dedicatedslave
+source build/env.sh
+b
+```
+
+## Run
+
+### Windows
+
+```bash
+cd dedicatedslave
+call build\env.cmd ds
+```
+
+### Unix
+
+```bash
+cd dedicatedslave
+source build/env.sh
+s
+```
+
+## Testing
+
+...
+
+## Countinous Integration
+
+...
+
+## Flow Diagram
+
+![Flow Diagram](../img/flowdiagram.png)
 
 ## Roadmap
 
@@ -74,79 +96,22 @@ source env.sh
 * Documentation (Doxygen ??)
 * Colors Output Stdout
 
+## Documentation
 
-## Build
-
-Release:
-
-```bash
-cmake .
-make -j8
-```
-
-Debug:
-
-```bash
-cmake -DCMAKE_BUILD_TYPE=Debug .
-make -j8
-```
-
-***
-
-## Run
-
-> The binary files are compile to ***bin/*** and ***bin/dbg/*** (Debug Mode)
-
-CLI
-
-```bash
-./dedicatedslave <>
-```
-
-GUI
-
-```bash
-./dedicatedslave-gui
-```
-
-***
-
-## Testing
-
-```bash
-...q
-```
-
-## Countinous Integration
-
-Sources:
-
-* ubuntu-toolchain-r-test - gcc
-* ubuntu-sdk-team - qt
-
-Qt Version: 5.2.1
-
----
-
-## Versioning
-
-M: Major; N: Minor; P: Patch
-
-* vM.N.P-alpha = Unstable version
-* vM.N.P-rc = Pre-release version
-* vM.N.P = Release version
-
-***
-
-## References
-
-* https://github.com/stachenov/quazip
-* https://wiki.qt.io/Download_Data_from_URL
-* https://stackoverflow.com/questions/1874049/explanation-of-the-uml-arrows
-* http://www.antonioborondo.com/2014/10/22/zipping-and-unzipping-files-with-qt/
-* https://stackoverflow.com/questions/4383864/downloading-file-in-qt-from-url
-* https://stackoverflow.com/questions/16250994/how-to-properly-use-qsettings
-* https://encrypted.google.com/search?hl=en&q=qprocess%20output%20ui%20qt
-* http://zetcode.com/gui/qt5/files/
-* https://stackoverflow.com/questions/41848939/reading-and-writing-to-qprocess-in-qt-console-application
-* http://www.walletfox.com/course/qxmlstreamreaderexample.php
+* [GtkD API](https://api.gtkd.org/gtkd/gtk/MainWindow.html)
+* [GtkD API Experimental](http://dpldocs.info/experimental-docs/gtk.ToolButton.ToolButton.html)
+* [gtkd-developers/GtkD](https://github.com/gtkd-developers/GtkD/)
+* [Gtk3 Developer Gnome](https://developer.gnome.org/gtk3/stable/)
+  * https://developer.gnome.org/gtk3/stable/gtk3-Stock-Items.html
+  * https://developer.gnome.org/gtk3/stable/gtk3-Themeable-Stock-Images.html
+* https://sites.google.com/site/gtkdtutorial/
+* Modules
+  * https://archive.dpldocs.info/archive.html
+* Icon Naming
+  * https://developer.gnome.org/icon-naming-spec/
+  * https://specifications.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
+* GameInstances
+  * Rust
+    * https://developer.valvesoftware.com/wiki/Rust_Dedicated_Server
+    * http://facepunch.github.io/webrcon
+    * https://quantumsoftware.co.za/index.php?resources/rust-server-manager.3/

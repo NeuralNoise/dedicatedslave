@@ -2,6 +2,14 @@
 
 We use [semantic](https://semver.org/) versioning 2.0
 
+## Versioning
+
+M: Major; N: Minor; P: Patch
+
+* vM.N.P-alpha = Unstable version
+* vM.N.P-rc = Pre-release version
+* vM.N.P = Release version
+
 ---
 
 ## v0.0.0-alpha (2018/06/10)

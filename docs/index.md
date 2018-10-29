@@ -1,10 +1,10 @@
 # Dedicated Slave
 
-![DedicatedSlave Banner](img/wide-banner.png)
-
 A cross platform desktop app tool to manage steam dedicated game servers with&nbsp;SteamCMD
 
 ---
+
+![DedicatedSlave Banner](img/wide-banner.png)
 
 ## Overview
 
@@ -24,3 +24,4 @@ Allow you to quickly launch any server from any platform.
 ### Screenshoots
 
 ![DedicatedSlave Screen 01](img/screen_01.png)
+![DedicatedSlave Dev Screen 01](img/devscreen_01.png)

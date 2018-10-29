@@ -246,9 +246,15 @@ class MainWindow : ApplicationWindow
 			auto csig = new CustomSignals;
 			
 			ToolButton a = new ToolButton(new Image("list-add", IconSize.BUTTON), "toolbar.add");
-			csig.connect(a, "clicked", (Event e, Widget w) { 
+
+			Signals.connect(a, "clicked", (Event e, Widget w) { 
 				return true;
-			 });
+			});
+
+			//csig.connect(a, "clicked", (Event e, Widget w) { 
+			//	return true;
+			//});
+			
 			this.insert(a);
 			//_toolbuttons[0] = a;
 			this.insert(new ToolButton(new Image("list-remove", IconSize.BUTTON), "toolbar.remove"));
