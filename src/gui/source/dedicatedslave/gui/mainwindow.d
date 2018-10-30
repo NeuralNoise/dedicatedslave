@@ -1,24 +1,32 @@
 module dedicatedslave.gui.mainwindow;
 
+
+private import std.container;
 private import gtk.ApplicationWindow;
 private import gtk.Application;
 private import gtk.Label;
 private import gtk.Box;
+import gtk.Window;
 private import gtk.Main;
+private import gtk.Entry;
 private import gtk.Image;
 private import gtk.HandleBox;
 private import gtk.MessageDialog;
 private import gtk.AboutDialog;
 private import gtk.Widget;
 private import gtk.MenuItem;
+import gtk.ComboBoxText;
 private import gtk.MenuBar;
 private import gtk.Menu;
+private import gtk.HBox;
 private import gtk.Button;
+import stdlib = core.stdc.stdlib : exit;
 private import gobject.Signals;
 private import gtk.AccelGroup;
 private import gtk.TextView;
-private import gtk.SeparatorToolItem;
-private import gtk.Toolbar;
+import gtk.VBox;
+import gtk.SeparatorToolItem;
+import gtk.Toolbar;
 private import gtk.Dialog;
 private import gtk.ToolButton;
 private import gtk.Statusbar;
@@ -29,11 +37,37 @@ private import dedicatedslave.gui.loader;
 private import dedicatedslave.gui.containers.list;
 private import dedicatedslave.gui.containers.notebook;
 private import dedicatedslave.gui.containers.console;
-private import dedicatedslave.gui.helper;
-import dedicatedslave.models.gameinstances;
+import dedicatedslave.data.models;
+import dedicatedslave.steamapi;
 
 class MainWindow : ApplicationWindow
 {
+
+	private GameListStore gameListStore;
+	private SteamAPI steamapi_instance;
+
+	/**
+	 * Executed when the user tries to close the window
+	 * @return true to refuse to close the window
+	 */
+	int windowDelete(GdkEvent* event, Widget widget)
+	{
+
+		debug(events) writefln("TestWindow.widgetDelete : this and widget to delete %X %X",this,window);
+		MessageDialog d = new MessageDialog(
+										this,
+										GtkDialogFlags.MODAL,
+										MessageType.QUESTION,
+										ButtonsType.YES_NO,
+										"Are you sure you want' to exit these GtkDTests?");
+		int responce = d.run();
+		if ( responce == ResponseType.YES )
+		{
+			stdlib.exit(0);
+		}
+		d.destroy();
+		return true;
+	}
 	
 	this(Application application, ref GUILoader loader)
 	{
@@ -43,8 +77,7 @@ class MainWindow : ApplicationWindow
 		setDefaultSize(800, 600);
 		setup(loader);
 
-		import dedicatedslave.steamapi;
-		SteamAPI steamapi_instance = new SteamAPI(loader);
+		steamapi_instance = new SteamAPI(loader);
 
 		//immutable string s = steamapi_instance.ss();
 		GameInstance g = steamapi_instance.ss();
@@ -52,6 +85,10 @@ class MainWindow : ApplicationWindow
 		loader.changeLogState(a);
 		
 		showAll();
+	}
+
+	public void addInstance(string name, string type){
+		gameListStore.addInstance(name, type);
 	}
 
 	void setup(ref GUILoader loader)
@@ -65,13 +102,11 @@ class MainWindow : ApplicationWindow
 		hbox.setBorderWidth(8);
 
 		MainConsole console = new MainConsole(loader);
-		auto countryListStore = new CountryListStore();
-		countryListStore.addCountry("Denmark", "Copenhagen");
-    	countryListStore.addCountry("Norway", "Olso");
-    	countryListStore.addCountry("Sweden", "Stockholm");
+		gameListStore = new GameListStore();
+		gameListStore.addInstance("inst1 (HARDCODED)", "CSGO");
 		Box left_vbox = new Box(Orientation.VERTICAL, 10);
 		left_vbox.packStart(new ScrolledWindow(console), true, true, 0);
-		left_vbox.packStart(new CountryTreeView(countryListStore), true, true, 0);
+		left_vbox.packStart(new GameTreeView(gameListStore), true, true, 0);
 		hbox.packStart(left_vbox, true, true, 0);
 
 		Box right_vbox = new Box(Orientation.VERTICAL, 10);
@@ -79,9 +114,10 @@ class MainWindow : ApplicationWindow
 		hbox.packStart(right_vbox, true, true, 0);
 
 		box.packStart(new MainMenu(accelGroup), false, false, 0);
-		box.packStart(new MainToolbar(), false, false, 0);
-		box.packStart(new MainStatusbar(), false, false, 0);
+		box.packStart(new MainToolbar(this, loader), false, false, 0);
+		
 		box.packStart(hbox, true, true, 0);
+		box.packStart(new MainStatusbar(), false, false, 0);
 
 		add(box);
 	}
@@ -240,30 +276,130 @@ class MainWindow : ApplicationWindow
 	
 	class MainToolbar : Toolbar
 	{
-		this()
+		import std.container;
+		import std.algorithm.comparison : equal;
+		import std.stdio : writefln;
+
+		this(MainWindow parent, ref GUILoader loader)
 		{
 			super();
-			auto csig = new CustomSignals;
-			
-			ToolButton a = new ToolButton(new Image("list-add", IconSize.BUTTON), "toolbar.add");
+			_loader = &loader;
+			_parent = parent;
+			// Initializing the array
+			_toolbuttons = [];
 
-			Signals.connect(a, "clicked", (Event e, Widget w) { 
-				return true;
-			});
-
-			//csig.connect(a, "clicked", (Event e, Widget w) { 
-			//	return true;
-			//});
+			auto arr = make!(Array!int)([4, 2, 3, 1]);
+			assert(equal(arr[], [4, 2, 3, 1]));
 			
-			this.insert(a);
-			//_toolbuttons[0] = a;
+			ToolButton toolbtn_add = new ToolButton(new Image("list-add", IconSize.BUTTON), "toolbar.add");
+			toolbtn_add.addOnClicked(&add);
+			_toolbuttons ~= toolbtn_add;
+			this.insert(toolbtn_add);
 			this.insert(new ToolButton(new Image("list-remove", IconSize.BUTTON), "toolbar.remove"));
 			this.insert(new SeparatorToolItem());
 			this.insert(new ToolButton(new Image("system-software-update", IconSize.BUTTON), "toolbar.update"));
-			this.insert(new ToolButton(new Image("media-playback-start", IconSize.BUTTON), "toolbar.start"));
+			ToolButton toolbtn_start = new ToolButton(new Image("media-playback-start", IconSize.BUTTON), "toolbar.start");
+			toolbtn_start.addOnClicked(&start);
+			this.insert(toolbtn_start);
 			this.insert(new ToolButton(new Image("media-playback-stop", IconSize.BUTTON), "toolbar.stop"));
 		}
+
 	private:
+		GUILoader* _loader;
+
+		MainWindow _parent;
 		ToolButton[] _toolbuttons;
+		string _instancename;
+		string _type;
+		Entry e;
+		ComboBoxText c;
+		Window w;
+
+		void add(ToolButton a)
+		{
+			w = new Window("Add");
+
+			VBox box = new VBox(false, 5);
+			
+			Box hbox1 = new Box(Orientation.HORIZONTAL, 10);
+			hbox1.setBorderWidth(8);
+			hbox1.packStart(new Label("Instance Name:"), false, false, 0);
+			e = new Entry("", 15);
+			hbox1.packStart(e, false, false, 0);
+
+			Box hbox2 = new Box(Orientation.HORIZONTAL, 10);
+			hbox2.setBorderWidth(8);
+			hbox2.packStart(new Label("Instance Type:"), false, false, 0);
+			c = new ComboBoxText();
+			c.appendText("CSGO");
+			c.appendText("Rust");
+			c.setActive(-1);
+			c.addOnChanged(&onGameChanged);
+			hbox2.packStart(c, false, false, 0);
+
+			Box hbox3 = new Box(Orientation.HORIZONTAL, 10);
+			hbox3.setBorderWidth(8);
+			hbox3.packStart(new Button("OK", &showSimpleCombo), false, false, 0);
+
+			box.packStart(hbox1, false, false, 0);
+			box.packStart(hbox2, false, false, 0);
+			box.packStart(hbox3, false, false, 0);
+
+			w.add(box);
+			w.showAll();
+		}
+
+		void start(ToolButton a)
+		{
+			steamapi_instance.runInst();
+			_loader.startInstance("RustServer");
+		}
+
+		void showSimpleCombo(Button button)
+		{
+			_parent.addInstance(e.getText(), _type);
+			w.destroy();
+		}
+
+		void onGameChanged(ComboBoxText comboBoxText)
+		{
+			debug(trace) writefln("Combo _type = %s", comboBoxText.getActiveText());
+			switch ( comboBoxText.getActiveText() )
+			{
+				case "CSGO":           _type = GameType.CSGO;           break;
+				case "Rust":           _type = GameType.Rust;           break;
+				default:               _type = GameType.Invalid;        break;
+			}
+		}
+
+		enum GameType : string
+		{
+			CSGO = "CSGO",
+			Rust = "Rust",
+			Invalid = "Invalid"
+		}
+
+		enum GameType2
+		{
+			CSGO,
+			Rust,
+			Invalid
+		}
+
+		void confirm(ToolButton a)
+		{
+			MessageDialog d = new MessageDialog(
+											_parent,
+											GtkDialogFlags.MODAL,
+											MessageType.INFO,
+											ButtonsType.OK,
+											"You pressed menu item ");
+			int responce = d.run();
+			if ( responce == ResponseType.YES)
+			{
+				stdlib.exit(0);
+			}
+			d.destroy();
+		}
 	}
 }

@@ -8,37 +8,37 @@ private import gtk.ListStore;
 private import gtk.TreeIter;
 private import gtkc.gobjecttypes;
 
-class CountryListStore : ListStore
+class GameListStore : ListStore
 {
     this()
     {
         super([GType.STRING, GType.STRING]);
     }
    
-    public void addCountry(in string name, in string capital)
+    public void addInstance(in string name, in string type)
     {
         TreeIter iter = createIter();
         setValue(iter, 0, name);
-        setValue(iter, 1, capital);
+        setValue(iter, 1, type);
     }
 }
 
-class CountryTreeView : TreeView
+class GameTreeView : TreeView
 {
-    private TreeViewColumn countryColumn;
-    private TreeViewColumn capitalColumn;
+    private TreeViewColumn nameColumn;
+    private TreeViewColumn typeColumn;
    
     this(ListStore store)
     {       
-        // Add Country Column
-        countryColumn = new TreeViewColumn(
-            "Country", new CellRendererText(), "text", 0);
-        appendColumn(countryColumn);
+        // Add Name Column
+        nameColumn = new TreeViewColumn(
+            "Name", new CellRendererText(), "text", 0);
+        appendColumn(nameColumn);
        
-        // Add Capital Column
-        capitalColumn = new TreeViewColumn(
-            "Capital", new CellRendererText(), "text", 1);
-        appendColumn(capitalColumn);
+        // Add Type Column
+        typeColumn = new TreeViewColumn(
+            "Type", new CellRendererText(), "text", 1);
+        appendColumn(typeColumn);
        
         setModel(store);
     }
