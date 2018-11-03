@@ -45,8 +45,12 @@ class SplashWindow : ApplicationWindow {
 		Thread _t = new Thread({
 			MonoTime timeBefore = MonoTime.currTime;
 			loader = new GUILoader((immutable string msg){
-				if(pb !is null) pb.pulse();
-				if(statusLbl !is null) statusLbl.setText(msg);
+				if(pb !is null){
+					pb.pulse();
+				}
+				if(statusLbl !is null){
+					statusLbl.setText(msg);
+				}
 			});
 			MonoTime timeAfter = MonoTime.currTime;
 			timeElapsed = timeAfter - timeBefore;
