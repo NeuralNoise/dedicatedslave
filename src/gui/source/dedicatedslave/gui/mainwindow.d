@@ -38,13 +38,14 @@ private import dedicatedslave.gui.containers.list;
 private import dedicatedslave.gui.containers.notebook;
 private import dedicatedslave.gui.containers.console;
 import dedicatedslave.data.models;
-import dedicatedslave.steamapi;
+import dedicatedslave.api;
 
 class MainWindow : ApplicationWindow
 {
 
 	private GameListStore gameListStore;
 	private SteamAPI steamapi_instance;
+	private GUILoader* _loader; // NOT
 
 	/**
 	 * Executed when the user tries to close the window
@@ -72,22 +73,15 @@ class MainWindow : ApplicationWindow
 	this(Application application, ref GUILoader loader)
 	{
 		super(application);
-
 		setTitle("DedicatedSlave");
 		setDefaultSize(800, 600);
+		_loader = &loader;
 		setup(loader);
-
-		steamapi_instance = new SteamAPI(loader);
-
-		//immutable string s = steamapi_instance.ss();
-		GameInstance g = steamapi_instance.ss();
-		immutable string a = g.getName();
-		loader.changeLogState(a);
-		
 		showAll();
 	}
 
 	public void addInstance(string name, string type){
+		_loader.addInstance(name, 0);
 		gameListStore.addInstance(name, type);
 	}
 
@@ -120,6 +114,7 @@ class MainWindow : ApplicationWindow
 		box.packStart(new MainStatusbar(), false, false, 0);
 
 		add(box);
+		loader.changeLogState("GUI Initialization Completed!");
 	}
 
 	class MainMenu : MenuBar
@@ -283,7 +278,6 @@ class MainWindow : ApplicationWindow
 		this(MainWindow parent, ref GUILoader loader)
 		{
 			super();
-			_loader = &loader;
 			_parent = parent;
 			// Initializing the array
 			_toolbuttons = [];
@@ -304,8 +298,7 @@ class MainWindow : ApplicationWindow
 			this.insert(new ToolButton(new Image("media-playback-stop", IconSize.BUTTON), "toolbar.stop"));
 		}
 
-	private:
-		GUILoader* _loader;
+	private:;
 
 		MainWindow _parent;
 		ToolButton[] _toolbuttons;
@@ -351,8 +344,9 @@ class MainWindow : ApplicationWindow
 
 		void start(ToolButton a)
 		{
-			steamapi_instance.runInst();
-			_loader.startInstance("RustServer");
+			// TODO
+			//steamapi_instance.runInst();
+			//_loader.startInstance("RustServer");
 		}
 
 		void showSimpleCombo(Button button)

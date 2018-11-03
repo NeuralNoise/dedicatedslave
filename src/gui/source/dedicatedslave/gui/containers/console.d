@@ -13,7 +13,7 @@ private import dedicatedslave.gui.loader;
 
 class MainConsole : TextView
 {
-    this(ref GUILoader loader)
+    this(GUILoader loader)
     {
         super();
 		this.setEditable(false);

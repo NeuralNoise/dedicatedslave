@@ -30,8 +30,9 @@ exit /b
 :db
 echo executing :db
 echo arg1 = %1
-dub build archive --compiler=ldc2
-dub build gtk-d:gtkd --compiler=ldc2
+::dub build archive --compiler=ldc2
+::dub build gtk-d:gtkd --compiler=ldc2
+::dub build d2sqlite3 --compiler=ldc2
 dub build --compiler=ldc2
 dub build :gui --compiler=ldc2
 exit /b

@@ -15,6 +15,12 @@
 		"src/cli"
 	],
 	"dependencies": {
-		"archive": "~>0.6.0"
-	}
+		"archive": "~>0.6.0",
+		"d2sqlite3": "~>0.17.1",
+		"asdf": "~>0.3.1"
+	},
+	"lflags": ["-LC:\\sqlite3\\sqlite3.lib"],
+	"subConfigurations": {
+        "d2sqlite3": "all-included"
+    }
 }

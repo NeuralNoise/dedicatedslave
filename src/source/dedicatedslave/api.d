@@ -1,7 +1,9 @@
-module dedicatedslave.steamapi;
+module dedicatedslave.api;
 
 import DedicatedSlave = dedicatedslave;
 import dedicatedslave.loader;
+
+import dedicatedslave.logger;
 
 import core.thread;
 import std.process;

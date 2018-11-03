@@ -8,13 +8,19 @@ import std.process;
 
 import dedicatedslave.data.models;
 
+
 class DataSystem {
 	this()
 	{
+		
 		_gameInstances ~= new RustGameInstance("RustServer");
 	}
 
 public:
+
+	void init(string data){
+
+	}
 
 	bool addInstance(string name, int game)
 	{
@@ -62,5 +68,6 @@ public:
 
 private:
 	GameInstance[] _gameInstances;
+	
 
 }

@@ -1,34 +1,54 @@
 module dedicatedslave.loader;
-
-import std.file;
 import std.path;
+import std.file;
 import DedicatedSlave = dedicatedslave;
 import dedicatedslave.data.data;
 import dedicatedslave.data.models;
+import dedicatedslave.config;
 import dedicatedslave.processmngr;
+import dedicatedslave.data.database;
+import dedicatedslave.logger;
 
 class Loader {
 	this()
 	{
 		instances_path = "D:\\ProgramFiles\\ProgramFiles\\DSInstances\\";
 		exe_path = thisExePath.dirName ~ "\\";
-		_dataSystem = new DataSystem();
-		_processMngr = new ProcessManager(this);
+		
+		// First Run
 		if(!exists(exe_path~DedicatedSlave.realPath))
 		{
 			installEnvironment();
 		}
+
+		_processMngr = new ProcessManager(this);
+		_dataSystem = new DataSystem();
+		if(!exists("config.json")){
+			changeLogState("Trying to create a config.json file");
+			std.file.write("config.json", _configMngr.getInitConfig());
+		}
+		_configMngr = new ConfigManager(this);
+		_configMngr.serialize();
+		if(!exists("database.db")){
+			_database = new DatabaseSystem();
+			_database.init();
+		}else{
+			_database = new DatabaseSystem();
+		}
+		_dataSystem.init(_database.dumpData());
 	}
 
 private:
 
 	DataSystem _dataSystem;
+	DatabaseSystem _database;
 	ProcessManager _processMngr;
+	ConfigManager _configMngr;
 
 	void installEnvironment()
 	{
 		changeLogState("Installing the environment...");
-
+		
 		if(exists(exe_path~DedicatedSlave.tmpPath))
 			rmdirRecurse(exe_path~DedicatedSlave.tmpPath);
 		mkdir(exe_path~DedicatedSlave.tmpPath);
@@ -102,7 +122,7 @@ public:
 	string exe_path;
 	string instances_path;
 
-	void changeLogState(immutable string msg)
+	public void changeLogState(immutable string msg)
 	{
 		import std.experimental.logger : info;
 		info(msg);
@@ -110,6 +130,7 @@ public:
 
 	bool addInstance(string name, int game)
 	{
+		_database.addInstance(name, game);
 		return _dataSystem.addInstance(name, game);
 	}
 
