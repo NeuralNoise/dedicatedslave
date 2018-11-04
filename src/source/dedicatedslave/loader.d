@@ -22,18 +22,22 @@ class Loader {
 		}
 
 		_processMngr = new ProcessManager(this);
-		_dataSystem = new DataSystem();
+		_dataSystem = new DataSystem(this);
 		if(!exists("config.json")){
 			changeLogState("Trying to create a config.json file");
 			std.file.write("config.json", _configMngr.getInitConfig());
 		}
 		_configMngr = new ConfigManager(this);
+
+		// Serialize Data
 		_configMngr.serialize();
+
+		// Init SQLite Database
 		if(!exists("database.db")){
-			_database = new DatabaseSystem();
+			_database = new DatabaseSystem(this);
 			_database.init();
 		}else{
-			_database = new DatabaseSystem();
+			_database = new DatabaseSystem(this);
 		}
 		_dataSystem.init(_database.dumpData());
 	}
@@ -122,6 +126,10 @@ public:
 	string exe_path;
 	string instances_path;
 
+	public string getInstanceName(){
+		return instances_path;
+	}
+
 	public void changeLogState(immutable string msg)
 	{
 		import std.experimental.logger : info;
@@ -133,6 +141,15 @@ public:
 		_database.addInstance(name, game);
 		return _dataSystem.addInstance(name, game);
 	}
+
+	bool addInstance2(string name, int game)
+	{
+		return _dataSystem.addInstance(name, game);
+	}
+
+	GameInstance[] fetchInstances(){
+		return _dataSystem.getInstances();
+	};
 
 	bool removeInstance(string name)
 	{

@@ -1,18 +1,26 @@
 module dedicatedslave.gui.containers.list;
 
-private import gtk.TreeView;
-private import gtk.TreeViewColumn;
-private import gtk.ListStore;
-private import gtk.CellRendererText;
-private import gtk.ListStore;
-private import gtk.TreeIter;
-private import gtkc.gobjecttypes;
+import gtk.TreeView;
+import gtk.TreeViewColumn;
+import gtk.ListStore;
+import gtk.CellRendererText;
+import gtk.ListStore;
+import gtk.TreeIter;
+import gtkc.gobjecttypes;
+
+import dedicatedslave.data.models;
+import dedicatedslave.gui.loader;
 
 class GameListStore : ListStore
 {
-    this()
+    this(GUILoader loader)
     {
         super([GType.STRING, GType.STRING]);
+        _loader = loader;
+        GameInstance[] instances = loader.fetchInstances();
+        foreach(instance; instances){
+            addInstance(instance.getName(), "0");
+        }
     }
    
     public void addInstance(in string name, in string type)
@@ -21,6 +29,8 @@ class GameListStore : ListStore
         setValue(iter, 0, name);
         setValue(iter, 1, type);
     }
+private:
+    GUILoader _loader;
 }
 
 class GameTreeView : TreeView

@@ -1,13 +1,13 @@
 module dedicatedslave.gui.containers.notebook;
 
-private import gtk.TreeView;
-private import gtk.TreeViewColumn;
-private import gtk.Label;
-private import gtk.CellRendererText;
-private import gtk.Notebook;
-private import gtk.ListStore;
-private import gtk.Box;
-private import gtkc.gobjecttypes;
+import gtk.TreeView;
+import gtk.TreeViewColumn;
+import gtk.Label;
+import gtk.CellRendererText;
+import gtk.Notebook;
+import gtk.ListStore;
+import gtk.Box;
+import gtkc.gobjecttypes;
 
 class MainNotebook : Notebook
 {

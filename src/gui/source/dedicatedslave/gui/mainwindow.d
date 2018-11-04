@@ -1,42 +1,48 @@
 module dedicatedslave.gui.mainwindow;
 
 
-private import std.container;
-private import gtk.ApplicationWindow;
-private import gtk.Application;
-private import gtk.Label;
-private import gtk.Box;
+import std.container;
+import gtk.ApplicationWindow;
+import gtk.Application;
+import gtk.Label;
+import gtk.Box;
 import gtk.Window;
-private import gtk.Main;
-private import gtk.Entry;
-private import gtk.Image;
-private import gtk.HandleBox;
-private import gtk.MessageDialog;
-private import gtk.AboutDialog;
-private import gtk.Widget;
-private import gtk.MenuItem;
+import gtk.Main;
+import gtk.Entry;
+import gtk.Image;
+import gtk.HandleBox;
+import gtk.MessageDialog;
+import gtk.AboutDialog;
+import gtk.Widget;
+import gtk.MenuItem;
 import gtk.ComboBoxText;
-private import gtk.MenuBar;
-private import gtk.Menu;
-private import gtk.HBox;
-private import gtk.Button;
+import gtk.MenuBar;
+import gtk.Menu;
+import gtk.HBox;
+import gtk.Button;
 import stdlib = core.stdc.stdlib : exit;
-private import gobject.Signals;
-private import gtk.AccelGroup;
-private import gtk.TextView;
+import gobject.Signals;
+
+import gtk.Widget;
+import gdk.Event;
+import gobject.ObjectG;
+import gtk.AccelGroup;
+import gtk.SeparatorMenuItem;
+import gtk.TextView;
 import gtk.VBox;
 import gtk.SeparatorToolItem;
 import gtk.Toolbar;
-private import gtk.Dialog;
-private import gtk.ToolButton;
-private import gtk.Statusbar;
-private import gtk.Notebook;
-private import gtk.ScrolledWindow;
-private import gdk.Event;
-private import dedicatedslave.gui.loader;
-private import dedicatedslave.gui.containers.list;
-private import dedicatedslave.gui.containers.notebook;
-private import dedicatedslave.gui.containers.console;
+import gtk.Dialog;
+import gtk.ToolButton;
+import gtk.Statusbar;
+import gtk.Notebook;
+import gtk.ScrolledWindow;
+import gdk.Event;
+import dedicatedslave.gui.loader;
+import dedicatedslave.gui.containers.list;
+import dedicatedslave.gui.containers.notebook;
+import dedicatedslave.gui.containers.console;
+import dedicatedslave.gui.settings;
 import dedicatedslave.data.models;
 import dedicatedslave.api;
 
@@ -76,6 +82,7 @@ class MainWindow : ApplicationWindow
 		setTitle("DedicatedSlave");
 		setDefaultSize(800, 600);
 		_loader = &loader;
+		loader.changeLogState("Setting up GUI...");
 		setup(loader);
 		showAll();
 	}
@@ -96,7 +103,7 @@ class MainWindow : ApplicationWindow
 		hbox.setBorderWidth(8);
 
 		MainConsole console = new MainConsole(loader);
-		gameListStore = new GameListStore();
+		gameListStore = new GameListStore(loader);
 		gameListStore.addInstance("inst1 (HARDCODED)", "CSGO");
 		Box left_vbox = new Box(Orientation.VERTICAL, 10);
 		left_vbox.packStart(new ScrolledWindow(console), true, true, 0);
@@ -107,7 +114,7 @@ class MainWindow : ApplicationWindow
 		right_vbox.packStart(new MainNotebook(), true, true, 0);
 		hbox.packStart(right_vbox, true, true, 0);
 
-		box.packStart(new MainMenu(accelGroup), false, false, 0);
+		box.packStart(new MainMenu(this, accelGroup, loader), false, false, 0);
 		box.packStart(new MainToolbar(this, loader), false, false, 0);
 		
 		box.packStart(hbox, true, true, 0);
@@ -115,98 +122,6 @@ class MainWindow : ApplicationWindow
 
 		add(box);
 		loader.changeLogState("GUI Initialization Completed!");
-	}
-
-	class MainMenu : MenuBar
-	{
-		this(AccelGroup accelGroup)
-		{
-			super();
-			
-			this.append(new FileMenuItem());
-			this.append(new EditMenuItem());
-			this.append(new ViewMenuItem());
-			this.append(new ToolsMenuItem());
-			this.append(new HelpMenuItem(accelGroup));
-		}
-
-		class FileMenuItem : MenuItem
-		{
-			this()
-			{
-				super("File");
-				_menu = new Menu();
-
-				_menuItem = new MenuItem("Exit");
-				_menuItem.addOnButtonRelease(&exit);
-				_menu.append(_menuItem);
-
-				setSubmenu(_menu);
-			}
-			bool exit(Event event, Widget widget)
-			{
-				Main.quit();
-				return true;
-			}
-		private:
-			Menu _menu;
-			MenuItem _menuItem;
-		}
-
-		class EditMenuItem : MenuItem
-		{
-			this()
-			{
-				super("Edit");
-				_menu = new Menu();
-				setSubmenu(_menu);
-			}
-		private:
-			Menu _menu;
-			MenuItem _menuItem;
-		}
-
-		class ViewMenuItem : MenuItem
-		{
-			this()
-			{
-				super("View");
-				_menu = new Menu();
-				setSubmenu(_menu);
-			}
-		private:
-			Menu _menu;
-			MenuItem _menuItem;
-		}
-
-		class ToolsMenuItem : MenuItem
-		{
-			this()
-			{
-				super("Tools");
-				_menu = new Menu();
-				setSubmenu(_menu);
-			}
-		private:
-			Menu _menu;
-			MenuItem _menuItem;
-		}
-
-		class HelpMenuItem : MenuItem
-		{
-			this(AccelGroup accelGroup)
-			{
-				super("Help");
-				_menu = new Menu();
-				_menuItem = new MenuItem(&MainWindow.onMenuActivate,"_About","help.about", true, accelGroup, 'a',GdkModifierType.CONTROL_MASK|GdkModifierType.SHIFT_MASK);
-				_menu.append(_menuItem);
-				setSubmenu(_menu);
-			}
-		private:
-			Menu _menu;
-			MenuItem _menuItem;
-		}
-
 	}
 
 	void onMenuActivate(MenuItem menuItem)
@@ -218,6 +133,15 @@ class MainWindow : ApplicationWindow
 				GtkDAbout dlg = new GtkDAbout();
 				dlg.addOnResponse(&onDialogResponse);
 				dlg.showAll();
+				break;
+			case "help.welcome":
+				GtkDAbout dlg = new GtkDAbout();
+				dlg.addOnResponse(&onDialogResponse);
+				dlg.showAll();
+				break;
+			case "file.settings":
+				SettingsWindow w = new SettingsWindow(_loader);
+				w.showAll();
 				break;
 			case "toolbar.add":
 				GtkDAbout dlg = new GtkDAbout();
@@ -268,6 +192,53 @@ class MainWindow : ApplicationWindow
 		}
 
 	}
+
+	class CustomSignals
+{
+    this() {}
+
+    void connect(Widget widget, string signal, bool delegate(Event, Widget) dlg)
+    {
+        auto wrapper = new Wrapper(widget, dlg);
+        Signals.connectData(widget, signal,
+                            cast(GCallback)&callback,
+                            cast(void*)wrapper,
+                            cast(GClosureNotify)&destroyCallback,
+                            cast(ConnectFlags)0
+                            );
+    }
+
+protected:
+    class Wrapper
+    {
+        Widget widget;
+        bool delegate(Event, Widget) dlg;
+
+        this(Widget widget, bool delegate(Event, Widget) dlg)
+        {
+            this.widget = widget;
+            this.dlg = dlg;
+            wrappers ~= this;
+        }
+
+        bool opCall(Event e) { return dlg(e, widget); }
+
+        void selfRemove()
+        {
+            import std.algorithm : filter;
+            import std.array : array;
+            wrappers = wrappers.filter!(a => this !is a).array;
+        }
+    }
+
+    Wrapper[] wrappers;
+
+    extern(C) static int callback(void* widgetStruct, GdkEvent* event, Wrapper wrapper)
+    { return wrapper(ObjectG.getDObject!Event(event)); }
+
+    extern(C) static void destroyCallback(Wrapper wrapper, void* closure)
+    { wrapper.selfRemove(); }
+}
 	
 	class MainToolbar : Toolbar
 	{
@@ -298,7 +269,7 @@ class MainWindow : ApplicationWindow
 			this.insert(new ToolButton(new Image("media-playback-stop", IconSize.BUTTON), "toolbar.stop"));
 		}
 
-	private:;
+	private:
 
 		MainWindow _parent;
 		ToolButton[] _toolbuttons;

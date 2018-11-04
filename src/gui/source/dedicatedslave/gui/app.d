@@ -10,9 +10,8 @@ int main(string[] args)
 {
 	auto application = new Application("enthdev.dedicatedslave.gui", GApplicationFlags.FLAGS_NONE);
 	SplashWindow splash_win;
-	GUILoader loader = new GUILoader((immutable string msg){
-
-	});
+	//GUILoader loader = new GUILoader((immutable string msg){
+	//});
 	application.addOnActivate(delegate void(GioApplication app){
 		splash_win = new SplashWindow(application);
 		MainWindow mainWindow = new MainWindow(application, splash_win.loader);

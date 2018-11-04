@@ -1,15 +1,15 @@
 module dedicatedslave.gui.containers.console;
 
-private import gtk.TreeView;
-private import gtk.TreeViewColumn;
-private import gtk.ListStore;
-private import gtk.CellRendererText;
-private import gtk.TextView;
+import gtk.TreeView;
+import gtk.TreeViewColumn;
+import gtk.ListStore;
+import gtk.CellRendererText;
+import gtk.TextView;
 
-private import gtk.ListStore;
-private import gtk.TreeIter;
-private import gtkc.gobjecttypes;
-private import dedicatedslave.gui.loader;
+import gtk.ListStore;
+import gtk.TreeIter;
+import gtkc.gobjecttypes;
+import dedicatedslave.gui.loader;
 
 class MainConsole : TextView
 {

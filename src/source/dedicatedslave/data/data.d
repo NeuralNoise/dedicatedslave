@@ -10,9 +10,9 @@ import dedicatedslave.data.models;
 
 
 class DataSystem {
-	this()
+	this(Loader loader)
 	{
-		
+		_loader = loader;
 		_gameInstances ~= new RustGameInstance("RustServer");
 	}
 
@@ -24,6 +24,7 @@ public:
 
 	bool addInstance(string name, int game)
 	{
+		_loader.changeLogState("Adding a new instance: "~name~" ("~"game"~")");
 		GameInstance g;
 		switch( game )
 		{
@@ -66,8 +67,12 @@ public:
 		return "";
 	}
 
+	GameInstance[] getInstances(){
+		return _gameInstances;
+	}
+
 private:
 	GameInstance[] _gameInstances;
-	
+	Loader _loader;
 
 }

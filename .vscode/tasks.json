@@ -4,17 +4,38 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "build gui",
+			"label": "Build (env.db)",
 			"type": "shell",
-			"command": "ninja src/gui/dedicatedslave-gui",
+			"command": "./build/env.sh db",
+			"windows": {
+                "command": ".\\build\\env.cmd db"
+            },
 			"options": {
-				"cwd": "${workspaceRoot}/.build"
+				"cwd": "${workspaceRoot}"
 			},
 			"problemMatcher": [],
 			"group": {
 				"kind": "build",
 				"isDefault": true
 			},
+			"presentation": {
+				"echo": true,
+				"reveal": "never",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Build Force (env.dbf)",
+			"type": "shell",
+			"command": "./build/env.sh dbf",
+			"windows": {
+                "command": ".\\build\\env.cmd dbf"
+            },
+			"options": {
+				"cwd": "${workspaceRoot}"
+			},
+			"problemMatcher": [],
 			"presentation": {
 				"echo": true,
 				"reveal": "never",
