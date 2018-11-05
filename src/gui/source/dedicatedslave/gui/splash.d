@@ -14,7 +14,7 @@ import core.time;
 import core.thread;
 import dedicatedslave.gui.loader;
 
-class SplashWindow : ApplicationWindow {
+class SplashAppWindow : ApplicationWindow {
 	this(Application application)
 	{
 		super(application);

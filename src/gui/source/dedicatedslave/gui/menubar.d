@@ -2,14 +2,23 @@ module dedicatedslave.gui.menubar;
 
 import gtk.Menu;
 import gtk.MenuItem;
+import gtk.MenuBar;
+import gtk.AccelGroup;
+import gdk.Event;
+import gtk.Widget;
+import gtk.Main;
+import gtk.Dialog;
+import gtk.AboutDialog;
+import gtk.MessageDialog;
 import gtk.SeparatorMenuItem;
 
+import dedicatedslave.gui.settings;
 import dedicatedslave.gui.mainwindow;
 import dedicatedslave.gui.loader;
 
-class MainMenu : MenuBar
+class MainMenuBar : MenuBar
 {
-    this(MainWindow parent, AccelGroup accelGroup, ref GUILoader loader)
+    this(MainAppWindow parent, AccelGroup accelGroup, ref GUILoader loader)
     {
         super();
         _parent = parent;
@@ -20,6 +29,49 @@ class MainMenu : MenuBar
         this.append(new HelpMenuItem(accelGroup));
     }
 
+    void onMenuActivate(MenuItem menuItem)
+	{
+		string action = menuItem.getActionName();
+		switch( action )
+		{
+			case "help.about":
+				AboutDialog dlg = new AboutDialog();
+                string[] names = ["Alexandre Ferreira (github.com/alex1a)", "Luís Ferreira (github.com/ljmf00)", "EnthDev (enthdev.github.io)"];
+                dlg.setAuthors( names );
+                dlg.setDocumenters( names );
+                dlg.setArtists( names );
+                dlg.setLicense("License is MIT");
+                dlg.setWebsite("https://dedicatedslave.readthedocs.io");
+				dlg.addOnResponse(&onDialogResponse);
+				dlg.showAll();
+				break;
+			case "help.welcome":
+				break;
+			case "file.settings":
+				SettingsWindow w = new SettingsWindow(_loader);
+				w.showAll();
+				break;
+			case "toolbar.add":
+				break;
+			default:
+				MessageDialog d = new MessageDialog(
+					_parent,
+					GtkDialogFlags.MODAL,
+					MessageType.INFO,
+					ButtonsType.OK,
+					"You pressed menu item "~action);
+				d.run();
+				d.destroy();
+			break;
+		}
+	}
+
+    void onDialogResponse(int response, Dialog dlg)
+	{
+		if(response == GtkResponseType.CANCEL)
+			dlg.destroy();
+	}
+
     class FileMenuItem : MenuItem
     {
         this(AccelGroup accelGroup)
@@ -27,7 +79,7 @@ class MainMenu : MenuBar
             super("File");
             _menu = new Menu();
 
-            _menuItem_settings = new MenuItem(&MainWindow.onMenuActivate,"_Settings","file.settings", true, accelGroup, 'a', GdkModifierType.CONTROL_MASK|GdkModifierType.SHIFT_MASK);
+            _menuItem_settings = new MenuItem(&MainMenuBar.onMenuActivate,"_Settings","file.settings", true, accelGroup, 'a', GdkModifierType.CONTROL_MASK|GdkModifierType.SHIFT_MASK);
             _menuItem_exit = new MenuItem("Exit");
             _menuItem_exit.addOnButtonRelease(&exit);
 
@@ -81,39 +133,30 @@ class MainMenu : MenuBar
         {
             super("Help");
             _menu = new Menu();
-
-            _menuItem_welcome = new MenuItem(&MainWindow.onMenuActivate,"_Welcome","help.welcome", true, accelGroup, 'a', GdkModifierType.CONTROL_MASK|GdkModifierType.SHIFT_MASK);
-            _menuItem_documentation = new MenuItem(&MainWindow.onMenuActivate,"_Documentation","help.documentation", true, accelGroup, 'a', GdkModifierType.CONTROL_MASK|GdkModifierType.SHIFT_MASK);
-            _menuItem_releasenotes = new MenuItem(&MainWindow.onMenuActivate,"_Release Notes","help.releasenotes", true, accelGroup, 'a', GdkModifierType.CONTROL_MASK|GdkModifierType.SHIFT_MASK);
-            _menuItem_discord = new MenuItem(&MainWindow.onMenuActivate,"_Join us on Discord","help.discord", true, accelGroup, 'a', GdkModifierType.CONTROL_MASK|GdkModifierType.SHIFT_MASK);
-            _menuItem_issue = new MenuItem(&MainWindow.onMenuActivate,"_Report Issue","help.issue", true, accelGroup, 'a', GdkModifierType.CONTROL_MASK|GdkModifierType.SHIFT_MASK);
-            _menuItem_license = new MenuItem(&MainWindow.onMenuActivate,"_License","help.license", true, accelGroup, 'a', GdkModifierType.CONTROL_MASK|GdkModifierType.SHIFT_MASK);
-            _menuItem_about = new MenuItem(&MainWindow.onMenuActivate,"_About","help.about", true, accelGroup, 'a', GdkModifierType.CONTROL_MASK|GdkModifierType.SHIFT_MASK);
             
-            _menu.append(_menuItem_welcome);
-            _menu.append(_menuItem_documentation);
-            _menu.append(_menuItem_releasenotes);
-            _menu.append(new SeparatorMenuItem());
-            _menu.append(_menuItem_discord);
-            _menu.append(_menuItem_issue);
-            _menu.append(new SeparatorMenuItem());
-            _menu.append(_menuItem_license);
-            _menu.append(new SeparatorMenuItem());
-            _menu.append(_menuItem_about);
+            _menuItems ~= new MenuItem(&MainMenuBar.onMenuActivate,"_Welcome","help.welcome", true, accelGroup, 'a', GdkModifierType.CONTROL_MASK|GdkModifierType.SHIFT_MASK);
+            _menuItems ~= new MenuItem(&MainMenuBar.onMenuActivate,"_Welcome","help.welcome", true, accelGroup, 'a', GdkModifierType.CONTROL_MASK|GdkModifierType.SHIFT_MASK);
+            _menuItems ~= new MenuItem(&MainMenuBar.onMenuActivate,"_Documentation","help.documentation", true, accelGroup, 'a', GdkModifierType.CONTROL_MASK|GdkModifierType.SHIFT_MASK);
+            _menuItems ~= new MenuItem(&MainMenuBar.onMenuActivate,"_Release Notes","help.releasenotes", true, accelGroup, 'a', GdkModifierType.CONTROL_MASK|GdkModifierType.SHIFT_MASK);
+            _menuItems ~= new SeparatorMenuItem();
+            _menuItems ~= new MenuItem(&MainMenuBar.onMenuActivate,"_Join us on Discord","help.discord", true, accelGroup, 'a', GdkModifierType.CONTROL_MASK|GdkModifierType.SHIFT_MASK);
+            _menuItems ~= new MenuItem(&MainMenuBar.onMenuActivate,"_Report Issue","help.issue", true, accelGroup, 'a', GdkModifierType.CONTROL_MASK|GdkModifierType.SHIFT_MASK);
+            _menuItems ~= new SeparatorMenuItem();
+            _menuItems ~= new MenuItem(&MainMenuBar.onMenuActivate,"_License","help.license", true, accelGroup, 'a', GdkModifierType.CONTROL_MASK|GdkModifierType.SHIFT_MASK);
+            _menuItems ~= new SeparatorMenuItem();
+            _menuItems ~= new MenuItem(&MainMenuBar.onMenuActivate,"_About","help.about", true, accelGroup, 'a', GdkModifierType.CONTROL_MASK|GdkModifierType.SHIFT_MASK);
+            
+            foreach(menuItem; _menuItems){
+                _menu.append(menuItem);
+            }
             
             setSubmenu(_menu);
         }
     private:
         Menu _menu;
-        MenuItem _menuItem_welcome;
-        MenuItem _menuItem_documentation;
-        MenuItem _menuItem_releasenotes;
-        MenuItem _menuItem_discord;
-        MenuItem _menuItem_issue;
-        MenuItem _menuItem_license;
-        MenuItem _menuItem_about;
+        MenuItem[] _menuItems;
     }
 private:
     GUILoader* _loader;
-    MainWindow _parent;
+    MainAppWindow _parent;
 }

@@ -1,10 +1,3 @@
-module dedicatedslave.gui.helper;
-
-import gtk.Widget;
-import gdk.Event;
-import gobject.ObjectG;
-import gobject.Signals;
-
 class CustomSignals
 {
     this() {}

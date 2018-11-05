@@ -10,6 +10,16 @@ import dedicatedslave.data.database;
 import dedicatedslave.logger;
 
 class Loader {
+
+	public string exe_path;
+	public string instances_path;
+
+	private DataSystem _dataSystem;
+	private DatabaseSystem _database;
+	private ProcessManager _processMngr;
+	private ConfigManager _configMngr;
+	private string _selectedInstance;
+
 	this()
 	{
 		instances_path = "D:\\ProgramFiles\\ProgramFiles\\DSInstances\\";
@@ -43,11 +53,6 @@ class Loader {
 	}
 
 private:
-
-	DataSystem _dataSystem;
-	DatabaseSystem _database;
-	ProcessManager _processMngr;
-	ConfigManager _configMngr;
 
 	void installEnvironment()
 	{
@@ -123,8 +128,10 @@ private:
 
 public:
 
-	string exe_path;
-	string instances_path;
+	public void setSelectedInstance(string selectedInstance){
+		_selectedInstance = selectedInstance;
+		changeLogState("Setting Selected to: " ~ selectedInstance);
+	}
 
 	public string getInstanceName(){
 		return instances_path;

@@ -11,7 +11,7 @@ import gtk.TreeIter;
 import gtkc.gobjecttypes;
 import dedicatedslave.gui.loader;
 
-class MainConsole : TextView
+class ConsoleContainer : TextView
 {
     this(GUILoader loader)
     {

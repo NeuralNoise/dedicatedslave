@@ -11,8 +11,11 @@ import gtkc.gobjecttypes;
 import dedicatedslave.data.models;
 import dedicatedslave.gui.loader;
 
-class GameListStore : ListStore
+class GameInstanceListStore : ListStore
 {
+
+    private GUILoader _loader;
+
     this(GUILoader loader)
     {
         super([GType.STRING, GType.STRING]);
@@ -29,17 +32,18 @@ class GameListStore : ListStore
         setValue(iter, 0, name);
         setValue(iter, 1, type);
     }
-private:
-    GUILoader _loader;
+
 }
 
-class GameTreeView : TreeView
+class ListContainer : TreeView
 {
     private TreeViewColumn nameColumn;
     private TreeViewColumn typeColumn;
-   
-    this(ListStore store)
-    {       
+    private GUILoader _loader;
+
+    this(GameInstanceListStore store, GUILoader loader)
+    {
+        _loader = loader;
         // Add Name Column
         nameColumn = new TreeViewColumn(
             "Name", new CellRendererText(), "text", 0);
@@ -51,5 +55,12 @@ class GameTreeView : TreeView
         appendColumn(typeColumn);
        
         setModel(store);
+
+        addOnCursorChanged(&onCursorChanged);
+    }
+
+    void onCursorChanged(TreeView t){
+        TreeIter selectedIter = t.getSelectedIter();
+        _loader.setSelectedInstance(selectedIter.getValueString(0));
     }
 }

@@ -13,7 +13,6 @@ class DataSystem {
 	this(Loader loader)
 	{
 		_loader = loader;
-		_gameInstances ~= new RustGameInstance("RustServer");
 	}
 
 public:

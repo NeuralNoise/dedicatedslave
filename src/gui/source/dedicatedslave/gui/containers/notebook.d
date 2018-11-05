@@ -9,7 +9,7 @@ import gtk.ListStore;
 import gtk.Box;
 import gtkc.gobjecttypes;
 
-class MainNotebook : Notebook
+class NotebookContainer : Notebook
 {
     this()
     {
