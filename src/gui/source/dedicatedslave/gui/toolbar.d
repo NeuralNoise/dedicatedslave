@@ -65,7 +65,7 @@ class MainToolbar : Toolbar
 		MainAppWindow _parent;
 		ToolButton[] _toolbuttons;
 		string _instancename;
-		string _type;
+		int _type;
 		Entry e;
 		ComboBoxText c;
 		Window w;
@@ -107,15 +107,14 @@ class MainToolbar : Toolbar
 		void remove(ToolButton a)
 		{
 			MessageDialog dlg = new MessageDialog(
-					_parent,
-					GtkDialogFlags.MODAL,
-					MessageType.QUESTION,
-					ButtonsType.YES_NO,
-					"Are you sure you to remove selected game instance?");
+				_parent,
+				GtkDialogFlags.MODAL,
+				MessageType.QUESTION,
+				ButtonsType.YES_NO,
+				"Are you sure you to remove selected game instance?");
 			dlg.addOnResponse(&onDialogResponse);
 			dlg.showAll();
 			dlg.run();
-			dlg.destroy();
 		}
 
 		void onDialogResponse(int response, Dialog dlg)
@@ -125,9 +124,10 @@ class MainToolbar : Toolbar
 			if(response == GtkResponseType.CANCEL){
 				dlg.destroy();
 			}else if(response == GtkResponseType.YES){
-				
+				dlg.destroy();
+				_parent.removeInstance(_parent.getSelectedInstance());
 			}else if(response == GtkResponseType.NO){
-				
+				dlg.destroy();
 			}
 		}
 
@@ -155,28 +155,21 @@ class MainToolbar : Toolbar
 			}
 		}
 
-		enum GameType : string
+		enum GameType : int
 		{
-			CSGO = "CSGO",
-			Rust = "Rust",
-			Invalid = "Invalid"
-		}
-
-		enum GameType2
-		{
-			CSGO,
-			Rust,
-			Invalid
+			CSGO = 0,
+			Rust = 1,
+			Invalid = -1
 		}
 
 		void confirm(ToolButton a)
 		{
 			MessageDialog d = new MessageDialog(
-											_parent,
-											GtkDialogFlags.MODAL,
-											MessageType.INFO,
-											ButtonsType.OK,
-											"You pressed menu item ");
+				_parent,
+				GtkDialogFlags.MODAL,
+				MessageType.INFO,
+				ButtonsType.OK,
+				"You pressed menu item ");
 			int responce = d.run();
 			if ( responce == ResponseType.YES)
 			{

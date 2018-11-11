@@ -149,18 +149,22 @@ public:
 		return _dataSystem.addInstance(name, game);
 	}
 
-	bool addInstance2(string name, int game)
+	bool addInstanceData(string name, int game)
 	{
 		return _dataSystem.addInstance(name, game);
 	}
 
-	GameInstance[] fetchInstances(){
-		return _dataSystem.getInstances();
-	};
-
 	bool removeInstance(string name)
 	{
+		changeLogState("Removing instance " ~ name ~ " from database");
+		_database.removeInstance(name);
+		changeLogState("Removing instance " ~ name ~ " from data");
 		return _dataSystem.removeInstance(name);
+		//return false;
+	}
+
+	GameInstance[] fetchInstances(){
+		return _dataSystem.getInstances();
 	}
 
 	bool startInstance(string name)

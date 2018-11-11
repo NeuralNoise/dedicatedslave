@@ -23,6 +23,6 @@
 	},
 	"lflags": ["-Lassets\\"],
 	"subConfigurations": {
-        "d2sqlite3": "with-lib"
+        "d2sqlite3": "all-included"
     }
 }

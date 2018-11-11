@@ -28,10 +28,10 @@ public:
 		switch( game )
 		{
 			case 0:
-				g = new RustGameInstance(name);
+				g = new CsgoGameInstance(name);
 				break;
 			case 1:
-				g = new CsgoGameInstance(name);
+				g = new RustGameInstance(name);
 				break;
 			default:
 				g = new RustGameInstance(name);

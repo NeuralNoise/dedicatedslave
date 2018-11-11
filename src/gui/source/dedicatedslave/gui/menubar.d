@@ -18,6 +18,10 @@ import dedicatedslave.gui.loader;
 
 class MainMenuBar : MenuBar
 {
+
+    private GUILoader* _loader;
+    private MainAppWindow _parent;
+
     this(MainAppWindow parent, AccelGroup accelGroup, ref GUILoader loader)
     {
         super();
@@ -74,6 +78,10 @@ class MainMenuBar : MenuBar
 
     class FileMenuItem : MenuItem
     {
+        private Menu _menu;
+        private MenuItem _menuItem_settings;
+        private MenuItem _menuItem_exit;
+
         this(AccelGroup accelGroup)
         {
             super("File");
@@ -89,46 +97,48 @@ class MainMenuBar : MenuBar
 
             setSubmenu(_menu);
         }
+
         bool exit(Event event, Widget widget)
         {
             Main.quit();
             return true;
-        }
-    private:
-        Menu _menu;
-        MenuItem _menuItem_settings;
-        MenuItem _menuItem_exit;
+        }        
 
     }
 
     class EditMenuItem : MenuItem
     {
+        private Menu _menu;
+        private MenuItem _menuItem;
+
         this()
         {
             super("Edit");
             _menu = new Menu();
             setSubmenu(_menu);
         }
-    private:
-        Menu _menu;
-        MenuItem _menuItem;
     }
 
     class ViewMenuItem : MenuItem
     {
+
+        private Menu _menu;
+        private MenuItem _menuItem;
+
         this()
         {
             super("View");
             _menu = new Menu();
             setSubmenu(_menu);
         }
-    private:
-        Menu _menu;
-        MenuItem _menuItem;
     }
 
     class HelpMenuItem : MenuItem
     {
+
+        private Menu _menu;
+        private MenuItem[] _menuItems;
+
         this(AccelGroup accelGroup)
         {
             super("Help");
@@ -152,11 +162,5 @@ class MainMenuBar : MenuBar
             
             setSubmenu(_menu);
         }
-    private:
-        Menu _menu;
-        MenuItem[] _menuItems;
     }
-private:
-    GUILoader* _loader;
-    MainAppWindow _parent;
 }

@@ -10,6 +10,7 @@ import gtkc.gobjecttypes;
 
 import dedicatedslave.data.models;
 import dedicatedslave.gui.loader;
+import dedicatedslave.gui.mainwindow;
 
 class GameInstanceListStore : ListStore
 {
@@ -22,15 +23,20 @@ class GameInstanceListStore : ListStore
         _loader = loader;
         GameInstance[] instances = loader.fetchInstances();
         foreach(instance; instances){
-            addInstance(instance.getName(), "0");
+            addInstance(instance.getName(), instance.getType);
         }
     }
    
-    public void addInstance(in string name, in string type)
+    public void addInstance(in string name, in int type)
     {
         TreeIter iter = createIter();
         setValue(iter, 0, name);
         setValue(iter, 1, type);
+    }
+
+    public bool removeInstance(TreeIter selectedIter)
+    {
+        return remove(selectedIter);
     }
 
 }
@@ -40,9 +46,11 @@ class ListContainer : TreeView
     private TreeViewColumn nameColumn;
     private TreeViewColumn typeColumn;
     private GUILoader _loader;
+    private MainAppWindow _parent;
 
-    this(GameInstanceListStore store, GUILoader loader)
+    this(MainAppWindow parent, GameInstanceListStore store, GUILoader loader)
     {
+        _parent = parent;
         _loader = loader;
         // Add Name Column
         nameColumn = new TreeViewColumn(
@@ -61,6 +69,9 @@ class ListContainer : TreeView
 
     void onCursorChanged(TreeView t){
         TreeIter selectedIter = t.getSelectedIter();
+
+        // TODO: when getSelectedIter return invalid treeiter, don't set selected instance.
         _loader.setSelectedInstance(selectedIter.getValueString(0));
+        _parent.setSelectedInstance(selectedIter);
     }
 }

@@ -26,6 +26,16 @@ public:
 		//statement.inject(name, gameId); // Bind, execute and reset in one call
 	}
 
+	void removeInstance(string name){
+		Statement statement = db.prepare(
+			"DELETE FROM `instances` WHERE name=:name;"
+		);
+		statement.bind(":name", name); // Bind values one by one (by parameter name or index)
+		statement.execute();
+		statement.reset(); // Need to reset the statement after execution.
+		//statement.inject(name, gameId); // Bind, execute and reset in one call
+	}
+
 	void init(){
 		db.run("CREATE TABLE `instances` ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `gameId` INTEGER NOT NULL, `description` TEXT )");
 	}
@@ -52,7 +62,9 @@ public:
 			{
 				// ...
 			}
-			_loader.addInstance2(name, gameId);
+
+			// Add only to data system
+			_loader.addInstanceData(name, gameId);
 		}
 		return "WIP";
 	}

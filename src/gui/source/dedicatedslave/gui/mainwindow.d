@@ -38,6 +38,7 @@ import gtk.Dialog;
 import gtk.ToolButton;
 import gtk.Statusbar;
 import gtk.Notebook;
+import gtk.TreeIter;
 import gtk.ScrolledWindow;
 
 import dedicatedslave.gui.loader;
@@ -57,6 +58,7 @@ class MainAppWindow : ApplicationWindow
 	private GameInstanceListStore gameListStore;
 	private SteamAPI steamapi_instance;
 	private GUILoader* _loader; // NOT
+	private TreeIter _selectedIter;
 
 	/**
 	 * Executed when the user tries to close the window
@@ -67,11 +69,11 @@ class MainAppWindow : ApplicationWindow
 
 		debug(events) writefln("TestWindow.widgetDelete : this and widget to delete %X %X",this,window);
 		MessageDialog d = new MessageDialog(
-										this,
-										GtkDialogFlags.MODAL,
-										MessageType.QUESTION,
-										ButtonsType.YES_NO,
-										"Are you sure you want' to exit these GtkDTests?");
+			this,
+			GtkDialogFlags.MODAL,
+			MessageType.QUESTION,
+			ButtonsType.YES_NO,
+			"Are you sure you want' to exit these GtkDTests?");
 		int responce = d.run();
 		if ( responce == ResponseType.YES )
 		{
@@ -92,11 +94,6 @@ class MainAppWindow : ApplicationWindow
 		showAll();
 	}
 
-	public void addInstance(string name, string type){
-		_loader.addInstance(name, 0);
-		gameListStore.addInstance(name, type);
-	}
-
 	void setupMainWindow(ref GUILoader loader)
 	{
 		Box box = new Box(Orientation.VERTICAL, 10);
@@ -111,7 +108,7 @@ class MainAppWindow : ApplicationWindow
 		gameListStore = new GameInstanceListStore(loader);
 		Box left_vbox = new Box(Orientation.VERTICAL, 10);
 		left_vbox.packStart(new ScrolledWindow(console), true, true, 0);
-		left_vbox.packStart(new ListContainer(gameListStore, loader), true, true, 0);
+		left_vbox.packStart(new ListContainer(this, gameListStore, loader), true, true, 0);
 		hbox.packStart(left_vbox, true, true, 0);
 
 		Box right_vbox = new Box(Orientation.VERTICAL, 10);
@@ -126,6 +123,28 @@ class MainAppWindow : ApplicationWindow
 
 		add(box);
 		loader.changeLogState("GUI Initialization Completed!");
+	}
+
+public:
+
+	void setSelectedInstance(TreeIter selectedIter)
+	{
+		_selectedIter = selectedIter;
+	}
+
+	TreeIter getSelectedInstance()
+	{
+		return _selectedIter;
+	}
+
+	void addInstance(string name, int type){
+		_loader.addInstance(name, type);
+		gameListStore.addInstance(name, type);
+	}
+
+	void removeInstance(TreeIter selectedIter){
+		_loader.removeInstance(selectedIter.getValueString(0));
+		gameListStore.removeInstance(selectedIter);
 	}
 
 }
