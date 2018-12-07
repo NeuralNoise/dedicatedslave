@@ -10,8 +10,11 @@ function b() {
     dub build d2sqlite3;
     dub build;
     dub build :gui;
-    }
-function bf() { dub build --force; dub build :gui --force;}
+}
+function bf() { 
+    dub build --force;
+    dub build :gui --force;
+}
 function s() { src/gui/.out/bin/dedicatedslave-gui }
 
 echo "Help:"

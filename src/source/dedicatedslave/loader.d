@@ -1,3 +1,14 @@
+// Written in the D programming language.
+
+/**
+Loader.
+
+Copyright: Copyright EnthDev 2017.
+License:   $(HTTP dedicatedslave.readthedocs.io/en/latest/about/license, MIT License).
+Authors:   $(HTTP alexjorge.me, Alexandre Ferreira),
+           $(HTTP lsferreira.net, Luis Ferreira)
+ */
+
 module dedicatedslave.loader;
 import std.path;
 import std.file;
@@ -13,6 +24,7 @@ class Loader {
 
 	public string exe_path;
 	public string instances_path;
+	public string instances_path2;
 
 	private DataSystem _dataSystem;
 	private DatabaseSystem _database;
@@ -22,6 +34,7 @@ class Loader {
 
 	this()
 	{
+		// TODO: Read this from config.json, not hardcoded
 		instances_path = "D:\\ProgramFiles\\ProgramFiles\\DSInstances\\";
 		exe_path = thisExePath.dirName ~ "\\";
 		
@@ -169,10 +182,17 @@ public:
 
 	bool startInstance(string name)
 	{
-		string runcmd = instances_path~name~"\\"~_dataSystem.getBinFile(name)~" -batchmode +server.port 28015 +server.level \"Procedural Map\" +server.seed 1234 +server.worldsize 4000 +server.maxplayers 10  +server.hostname \"alex1a's Rust Server\" +server.description \"This is my dev server.\" +server.url \"http://alexjorge.me\" +server.headerimage \"http://yourwebsite.com/serverimage.jpg\" +server.identity \"server1\" +rcon.port 28016 +rcon.password letmein +rcon.web 1";
+		string runCmd = instances_path~name~"\\"~_dataSystem.getBinFile(name)~" -batchmode +server.port 28015 +server.level \"Procedural Map\" +server.seed 1234 +server.worldsize 4000 +server.maxplayers 10  +server.hostname \"alex1a's Rust Server\" +server.description \"This is my dev server.\" +server.url \"http://alexjorge.me\" +server.headerimage \"http://yourwebsite.com/serverimage.jpg\" +server.identity \"server1\" +rcon.port 28016 +rcon.password letmein +rcon.web 1";
+		//changeLogState("CMD: "~runCmd);
+		_processMngr.runCmdThread(runCmd);
+		return false;
+	}
 
-		changeLogState("CMD: "~runcmd);
-		_processMngr.runCmdThread(runcmd);
+	bool updateInstance(string name)
+	{
+		string runCmd = exe_path~DedicatedSlave.realPath~"steamcmd\\"~DedicatedSlave.execFilePlatform~" +login anonymous +force_install_dir "~instances_path~" +app_update 258550 +quit";
+		changeLogState("CMD: "~runCmd);
+		_processMngr.runCmdThread(runCmd);
 		return false;
 	}
 

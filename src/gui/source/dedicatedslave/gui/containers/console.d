@@ -5,15 +5,15 @@ import gtk.TreeViewColumn;
 import gtk.ListStore;
 import gtk.CellRendererText;
 import gtk.TextView;
-
 import gtk.ListStore;
 import gtk.TreeIter;
 import gtkc.gobjecttypes;
+
 import dedicatedslave.gui.loader;
 
 class ConsoleContainer : TextView
 {
-    this(GUILoader loader)
+    this(ref GUILoader loader)
     {
         super();
 		this.setEditable(false);

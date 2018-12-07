@@ -1,4 +1,4 @@
-module dedicatedslave.gui.splash;
+module dedicatedslave.gui.splashwindow;
 
 import gtk.Image;
 import gtk.Application;
@@ -15,6 +15,9 @@ import core.thread;
 import dedicatedslave.gui.loader;
 
 class SplashAppWindow : ApplicationWindow {
+
+	GUILoader loader;
+
 	this(Application application)
 	{
 		super(application);
@@ -69,6 +72,4 @@ class SplashAppWindow : ApplicationWindow {
 				return false;
 			});
 	}
-
-	GUILoader loader;
 }

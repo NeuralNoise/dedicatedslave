@@ -1,7 +1,9 @@
 {
 	"name": "gui",
 	"targetType": "executable",
-	"targetPath": "source",
+	"platforms": [
+        "windows"
+    ],
 	"targetPath": ".out/bin",
 	"targetName": "dedicatedslave-gui",
 	"sourcePaths": [ "source" ],

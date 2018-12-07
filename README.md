@@ -36,4 +36,4 @@ Please read [Contributing Guidelines](http://dedicatedslave.readthedocs.io/en/la
 
 ***
 
-This document was written with [Markdown](http://daringfireball.net/projects/markdown/), [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/) and [Emoji](http://www.webpagefx.com/tools/emoji-cheat-sheet/). :smile:
+This document was written with [Markdown](http://daringfireball.net/projects/markdown/), [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/) and [Emoji](http://www.webpagefx.com/tools/emoji-cheat-sheet/). :smile: EnthDev 2018

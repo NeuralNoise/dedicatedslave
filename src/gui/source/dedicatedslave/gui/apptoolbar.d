@@ -1,4 +1,4 @@
-module dedicatedslave.gui.toolbar;
+module dedicatedslave.gui.apptoolbar;
 
 import gtk.Menu;
 import gtk.MenuItem;
@@ -18,14 +18,16 @@ import gtk.SeparatorToolItem;
 import gtk.AboutDialog;
 import gtk.MessageDialog;
 import gtk.Label;
+import gtk.TextView;
 import gtk.ComboBoxText;
 import gtk.VBox;
 import gtk.Box;
 import gtk.HBox;
 import gtk.SeparatorMenuItem;
 
-import dedicatedslave.gui.settings;
-import dedicatedslave.gui.mainwindow;
+import dedicatedslave.gui.settingswindow;
+import dedicatedslave.gui.appwindow;
+import dedicatedslave.gui.instance.instwindow;
 import dedicatedslave.gui.loader;
 
 class MainToolbar : Toolbar
@@ -34,10 +36,22 @@ class MainToolbar : Toolbar
 		import std.algorithm.comparison : equal;
 		import std.stdio : writefln;
 
+		private GUILoader* _loader;
+		private MainAppWindow _parent;
+		private ToolButton[] _toolbuttons;
+		private string _instancename;
+		private int _type;
+		private Entry e;
+		private TextView t;
+		private Window w;
+		private ComboBoxText c;
+
+		// MainToolbar Constructor
 		this(MainAppWindow parent, ref GUILoader loader)
 		{
 			super();
 			_parent = parent;
+			_loader = &loader;
 			// Initializing the array
 			_toolbuttons = [];
 
@@ -45,32 +59,35 @@ class MainToolbar : Toolbar
 			assert(equal(arr[], [4, 2, 3, 1]));
 			
 			ToolButton toolbtn_add = new ToolButton(new Image("list-add", IconSize.BUTTON), "toolbar.add");
-			toolbtn_add.addOnClicked(&add);
+			toolbtn_add.addOnClicked(&onClickedAdd);
 			_toolbuttons ~= toolbtn_add;
 			this.insert(toolbtn_add);
 			ToolButton toolbtn_remove = new ToolButton(new Image("list-remove", IconSize.BUTTON), "toolbar.remove");
-			toolbtn_remove.addOnClicked(&remove);
+			toolbtn_remove.addOnClicked(&onClickedRemove);
 			_toolbuttons ~= toolbtn_remove;
 			this.insert(toolbtn_remove);
-			this.insert(new SeparatorToolItem());
-			this.insert(new ToolButton(new Image("system-software-update", IconSize.BUTTON), "toolbar.update"));
-			ToolButton toolbtn_start = new ToolButton(new Image("media-playback-start", IconSize.BUTTON), "toolbar.start");
-			toolbtn_start.addOnClicked(&start);
-			this.insert(toolbtn_start);
-			this.insert(new ToolButton(new Image("media-playback-stop", IconSize.BUTTON), "toolbar.stop"));
+			ToolButton toolbtn_info = new ToolButton(new Image("dialog-warning", IconSize.BUTTON), "toolbar.info");
+			toolbtn_info.addOnClicked(&onClickedInfo);
+			this.insert(toolbtn_info);
+
+		}
+
+		// startInstance
+		void startInstance()
+		{
+			_parent.startInstance();
+		}
+
+		// updateInstance
+		void updateInstance()
+		{
+			_parent.updateInstance();
 		}
 
 	private:
 
-		MainAppWindow _parent;
-		ToolButton[] _toolbuttons;
-		string _instancename;
-		int _type;
-		Entry e;
-		ComboBoxText c;
-		Window w;
-
-		void add(ToolButton a)
+		// onClickedAdd Event
+		void onClickedAdd(ToolButton a)
 		{
 			w = new Window("Add");
 
@@ -89,12 +106,12 @@ class MainToolbar : Toolbar
 			c.appendText("CSGO");
 			c.appendText("Rust");
 			c.setActive(-1);
-			c.addOnChanged(&onGameChanged);
+			c.addOnChanged(&onComboChangedGame);
 			hbox2.packStart(c, false, false, 0);
 
 			Box hbox3 = new Box(Orientation.HORIZONTAL, 10);
 			hbox3.setBorderWidth(8);
-			hbox3.packStart(new Button("OK", &showSimpleCombo), false, false, 0);
+			hbox3.packStart(new Button("OK", &onClickedOk), false, false, 0);
 
 			box.packStart(hbox1, false, false, 0);
 			box.packStart(hbox2, false, false, 0);
@@ -104,7 +121,8 @@ class MainToolbar : Toolbar
 			w.showAll();
 		}
 
-		void remove(ToolButton a)
+		// onClickedRemove Event
+		void onClickedRemove(ToolButton a)
 		{
 			MessageDialog dlg = new MessageDialog(
 				_parent,
@@ -112,12 +130,13 @@ class MainToolbar : Toolbar
 				MessageType.QUESTION,
 				ButtonsType.YES_NO,
 				"Are you sure you to remove selected game instance?");
-			dlg.addOnResponse(&onDialogResponse);
+			dlg.addOnResponse(&onRemoveDialogResponse);
 			dlg.showAll();
 			dlg.run();
 		}
 
-		void onDialogResponse(int response, Dialog dlg)
+		// onRemoveDialogResponse Event
+		void onRemoveDialogResponse(int response, Dialog dlg)
 		{
 			import std.stdio;
 			writeln(response);
@@ -131,20 +150,21 @@ class MainToolbar : Toolbar
 			}
 		}
 
-		void start(ToolButton a)
+		// onClickedAdd Event
+		void onClickedInfo(ToolButton a)
 		{
-			// TODO
-			//steamapi_instance.runInst();
-			//_loader.startInstance("RustServer");
+			InstanceWindow w = new InstanceWindow(this, _loader, "Info");
 		}
 
-		void showSimpleCombo(Button button)
+		// onClickedOk Event
+		void onClickedOk(Button button)
 		{
 			_parent.addInstance(e.getText(), _type);
 			w.destroy();
 		}
 
-		void onGameChanged(ComboBoxText comboBoxText)
+		// onComboChangedGame Event
+		void onComboChangedGame(ComboBoxText comboBoxText)
 		{
 			debug(trace) writefln("Combo _type = %s", comboBoxText.getActiveText());
 			switch ( comboBoxText.getActiveText() )
@@ -162,19 +182,4 @@ class MainToolbar : Toolbar
 			Invalid = -1
 		}
 
-		void confirm(ToolButton a)
-		{
-			MessageDialog d = new MessageDialog(
-				_parent,
-				GtkDialogFlags.MODAL,
-				MessageType.INFO,
-				ButtonsType.OK,
-				"You pressed menu item ");
-			int responce = d.run();
-			if ( responce == ResponseType.YES)
-			{
-				stdlib.exit(0);
-			}
-			d.destroy();
-		}
 	}

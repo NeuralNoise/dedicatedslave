@@ -1,0 +1,1 @@
+module dedicatedslave.gui.instance.inststatusbar;

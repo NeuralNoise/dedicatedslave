@@ -1,4 +1,4 @@
-module dedicatedslave.gui.menubar;
+module dedicatedslave.gui.appmenubar;
 
 import gtk.Menu;
 import gtk.MenuItem;
@@ -12,8 +12,8 @@ import gtk.AboutDialog;
 import gtk.MessageDialog;
 import gtk.SeparatorMenuItem;
 
-import dedicatedslave.gui.settings;
-import dedicatedslave.gui.mainwindow;
+import dedicatedslave.gui.settingswindow;
+import dedicatedslave.gui.appwindow;
 import dedicatedslave.gui.loader;
 
 class MainMenuBar : MenuBar
@@ -28,8 +28,7 @@ class MainMenuBar : MenuBar
         _parent = parent;
         _loader = &loader;
         this.append(new FileMenuItem(accelGroup));
-        this.append(new EditMenuItem());
-        this.append(new ViewMenuItem());
+        this.append(new ViewMenuItem(accelGroup));
         this.append(new HelpMenuItem(accelGroup));
     }
 
@@ -106,29 +105,23 @@ class MainMenuBar : MenuBar
 
     }
 
-    class EditMenuItem : MenuItem
-    {
-        private Menu _menu;
-        private MenuItem _menuItem;
-
-        this()
-        {
-            super("Edit");
-            _menu = new Menu();
-            setSubmenu(_menu);
-        }
-    }
-
     class ViewMenuItem : MenuItem
     {
 
         private Menu _menu;
-        private MenuItem _menuItem;
+        private MenuItem[] _menuItems;
 
-        this()
+        this(AccelGroup accelGroup)
         {
             super("View");
             _menu = new Menu();
+
+            _menuItems ~= new MenuItem(&MainMenuBar.onMenuActivate,"_Show","help.welcome", true, accelGroup, 'a', GdkModifierType.CONTROL_MASK|GdkModifierType.SHIFT_MASK);
+
+            foreach(menuItem; _menuItems){
+                _menu.append(menuItem);
+            }
+
             setSubmenu(_menu);
         }
     }
@@ -144,7 +137,6 @@ class MainMenuBar : MenuBar
             super("Help");
             _menu = new Menu();
             
-            _menuItems ~= new MenuItem(&MainMenuBar.onMenuActivate,"_Welcome","help.welcome", true, accelGroup, 'a', GdkModifierType.CONTROL_MASK|GdkModifierType.SHIFT_MASK);
             _menuItems ~= new MenuItem(&MainMenuBar.onMenuActivate,"_Welcome","help.welcome", true, accelGroup, 'a', GdkModifierType.CONTROL_MASK|GdkModifierType.SHIFT_MASK);
             _menuItems ~= new MenuItem(&MainMenuBar.onMenuActivate,"_Documentation","help.documentation", true, accelGroup, 'a', GdkModifierType.CONTROL_MASK|GdkModifierType.SHIFT_MASK);
             _menuItems ~= new MenuItem(&MainMenuBar.onMenuActivate,"_Release Notes","help.releasenotes", true, accelGroup, 'a', GdkModifierType.CONTROL_MASK|GdkModifierType.SHIFT_MASK);

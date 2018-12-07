@@ -10,7 +10,7 @@ import gtkc.gobjecttypes;
 
 import dedicatedslave.data.models;
 import dedicatedslave.gui.loader;
-import dedicatedslave.gui.mainwindow;
+import dedicatedslave.gui.appwindow;
 
 class GameInstanceListStore : ListStore
 {

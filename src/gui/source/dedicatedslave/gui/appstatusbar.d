@@ -1,4 +1,4 @@
-module dedicatedslave.gui.statusbar;
+module dedicatedslave.gui.appstatusbar;
 
 import gtk.Statusbar;
 

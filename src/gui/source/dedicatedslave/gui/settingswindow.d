@@ -1,4 +1,4 @@
-module dedicatedslave.gui.settings;
+module dedicatedslave.gui.settingswindow;
 import gtk.VBox;
 import gtk.HBox;
 import gtk.Box;
@@ -17,10 +17,10 @@ class SettingsWindow : Window {
     this(GUILoader* loader){
         super("Settings");
         _loader = loader;
-        setup();
+        setupWindow();
     }
 
-    void setup(){
+    void setupWindow(){
         VBox box = new VBox(false, 5);
 			
         Box hbox1 = new Box(Orientation.HORIZONTAL, 10);
@@ -43,8 +43,5 @@ class SettingsWindow : Window {
 
         add(box);
     }
-
-private:
-
     
 }
