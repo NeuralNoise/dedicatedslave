@@ -36,10 +36,10 @@ class ConfigManager {
 public:
 
     void serialize(){
-        _loader.changeLogState("Parsing config.json...");
+        _loader.changeLogState("Parsing config.json...", 0);
         string configfile = std.file.readText("config.json");
         JSONValue j = parseJSON(configfile);
-        _loader.changeLogState("instancesDir: " ~ j["instancesDir"].str);
+        _loader.changeLogState("instancesDir: " ~ j["instancesDir"].str, 0);
     }
 
     string getInitConfig(){

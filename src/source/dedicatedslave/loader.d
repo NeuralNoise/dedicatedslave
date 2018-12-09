@@ -47,7 +47,7 @@ class Loader {
 		_processMngr = new ProcessManager(this);
 		_dataSystem = new DataSystem(this);
 		if(!exists("config.json")){
-			changeLogState("Trying to create a config.json file");
+			changeLogState("Trying to create a config.json file", 0);
 			std.file.write("config.json", _configMngr.getInitConfig());
 		}
 		_configMngr = new ConfigManager(this);
@@ -69,42 +69,42 @@ private:
 
 	void installEnvironment()
 	{
-		changeLogState("Installing the environment...");
+		changeLogState("Installing the environment...", 0);
 		
 		if(exists(exe_path~DedicatedSlave.tmpPath))
 			rmdirRecurse(exe_path~DedicatedSlave.tmpPath);
 		mkdir(exe_path~DedicatedSlave.tmpPath);
 
-		changeLogState("Downloading " ~ DedicatedSlave.urlPlatform ~ "...");
+		changeLogState("Downloading " ~ DedicatedSlave.urlPlatform ~ "...", 0);
 		import std.net.curl : download;
 		import std.path : extension;
 		immutable string steamcmd_extension = extension(DedicatedSlave.urlPlatform);
 		immutable string steamcmd_filename = exe_path~DedicatedSlave.tmpPath~"steamcmd"~extension(DedicatedSlave.urlPlatform);
 		download(DedicatedSlave.urlPlatform, steamcmd_filename);
 		
-		changeLogState("Extracting " ~ steamcmd_filename ~ "...");
+		changeLogState("Extracting " ~ steamcmd_filename ~ "...", 0);
 		if(steamcmd_extension == ".gz")
 		{
 			import archive.targz;
 			import std.stdio: writeln;
 
 			auto archive_file = new TarGzArchive(read(steamcmd_filename));
-			changeLogState("Create directory "~exe_path~DedicatedSlave.tmpPath~"steamcmd\\");
+			changeLogState("Create directory "~exe_path~DedicatedSlave.tmpPath~"steamcmd\\", 0);
 			mkdir(exe_path~DedicatedSlave.tmpPath~"steamcmd\\");
 
 			foreach (memberFile; archive_file.directories)
 			{
-				changeLogState("Create directory "~memberFile.path~"...");
+				changeLogState("Create directory "~memberFile.path~"...",0);
 				mkdir(exe_path~DedicatedSlave.tmpPath~"steamcmd\\"~memberFile.path);
-				changeLogState("Set attributes for "~memberFile.path~"...");
+				changeLogState("Set attributes for "~memberFile.path~"...", 0);
 				setAttributes(exe_path~DedicatedSlave.tmpPath~"steamcmd\\"~memberFile.path, memberFile.permissions);
 			}
 
 			foreach (memberFile; archive_file.files)
 			{
-				changeLogState("Extracting "~memberFile.path~"...");
+				changeLogState("Extracting "~memberFile.path~"...", 0);
 				write(exe_path~DedicatedSlave.tmpPath~"steamcmd\\"~memberFile.path, memberFile.data);
-				changeLogState("Set attributes for "~memberFile.path~"...");
+				changeLogState("Set attributes for "~memberFile.path~"...", 0);
 				setAttributes(exe_path~DedicatedSlave.tmpPath~"steamcmd\\"~memberFile.path, memberFile.permissions);
 			}
 		}
@@ -114,28 +114,28 @@ private:
 			import std.stdio: writeln;
 
 			auto archive_file = new ZipArchive(read(steamcmd_filename));
-			changeLogState("Create directory "~exe_path~DedicatedSlave.tmpPath~"steamcmd\\");
+			changeLogState("Create directory "~exe_path~DedicatedSlave.tmpPath~"steamcmd\\", 0);
 			mkdir(exe_path~DedicatedSlave.tmpPath~"steamcmd\\");
 
 			foreach (memberFile; archive_file.directories)
 			{
-				changeLogState("Create directory "~memberFile.path~"...");
+				changeLogState("Create directory "~memberFile.path~"...", 0);
 				mkdir(exe_path~DedicatedSlave.tmpPath~"steamcmd\\"~memberFile.path);
-				changeLogState("Set attributes for "~memberFile.path~"...");
+				changeLogState("Set attributes for "~memberFile.path~"...", 0);
 			}
 
 			foreach (memberFile; archive_file.files)
 			{
-				changeLogState("Extracting "~memberFile.path~"...");
+				changeLogState("Extracting "~memberFile.path~"...", 0);
 				write(exe_path~DedicatedSlave.tmpPath~"steamcmd\\"~memberFile.path, memberFile.data);
-				changeLogState("Set attributes for "~memberFile.path~"...");
+				changeLogState("Set attributes for "~memberFile.path~"...", 0);
 			}
 		}
-		changeLogState("Delete "~steamcmd_filename~"...");
+		changeLogState("Delete "~steamcmd_filename~"...", 0);
 		remove(steamcmd_filename);
 
-		changeLogState("Finishing setup...");
-		changeLogState("Renaming "~exe_path~DedicatedSlave.tmpPath~" TO "~exe_path~DedicatedSlave.realPath);
+		changeLogState("Finishing setup...", 0);
+		changeLogState("Renaming "~exe_path~DedicatedSlave.tmpPath~" TO "~exe_path~DedicatedSlave.realPath, 0);
 		rename(exe_path~DedicatedSlave.tmpPath, exe_path~DedicatedSlave.realPath);
 	}
 
@@ -143,14 +143,14 @@ public:
 
 	public void setSelectedInstance(string selectedInstance){
 		_selectedInstance = selectedInstance;
-		changeLogState("Setting Selected to: " ~ selectedInstance);
+		changeLogState("Setting Selected to: " ~ selectedInstance, 0);
 	}
 
 	public string getInstanceName(){
 		return instances_path;
 	}
 
-	public void changeLogState(immutable string msg)
+	public void changeLogState(immutable string msg, int index)
 	{
 		import std.experimental.logger : info;
 		info(msg);
@@ -169,9 +169,9 @@ public:
 
 	bool removeInstance(string name)
 	{
-		changeLogState("Removing instance " ~ name ~ " from database");
+		changeLogState("Removing instance " ~ name ~ " from database", 0);
 		_database.removeInstance(name);
-		changeLogState("Removing instance " ~ name ~ " from data");
+		changeLogState("Removing instance " ~ name ~ " from data", 0);
 		return _dataSystem.removeInstance(name);
 		//return false;
 	}
@@ -190,8 +190,8 @@ public:
 
 	bool updateInstance(string name)
 	{
-		string runCmd = exe_path~DedicatedSlave.realPath~"steamcmd\\"~DedicatedSlave.execFilePlatform~" +login anonymous +force_install_dir "~instances_path~" +app_update 258550 +quit";
-		changeLogState("CMD: "~runCmd);
+		string runCmd = exe_path~DedicatedSlave.realPath~"steamcmd\\"~DedicatedSlave.execFilePlatform~" +login anonymous +force_install_dir "~instances_path~name~" +app_update 258550 +quit";
+		changeLogState("CMD: "~runCmd, 0);
 		_processMngr.runCmdThread(runCmd);
 		return false;
 	}

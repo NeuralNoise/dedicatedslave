@@ -46,10 +46,13 @@ class InstanceWindow : Window
         t.setEditable(false);
         t.setMonospace(true);
         t.setWrapMode(GtkWrapMode.WORD_CHAR);
-        //_loader.changeLogCallback(delegate(immutable string msg) {
-        //    import glib.Idle;
-        //    new Idle({t.appendText(msg~"\n"); return false;}, GPriority.DEFAULT_IDLE, true);
-        //});
+        _loader.changeLogCallback(delegate(immutable string msg) {
+            import glib.Idle;
+            new Idle({
+                t.appendText(msg~"\n");
+                return false;
+            }, GPriority.DEFAULT_IDLE, true);
+        }, 1);
 
         TextView t1 = new TextView();
 

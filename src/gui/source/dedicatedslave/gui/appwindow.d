@@ -51,6 +51,9 @@ import dedicatedslave.gui.apptoolbar;
 import dedicatedslave.gui.appstatusbar;
 import dedicatedslave.data.models;
 
+/**
+ * Provides the main window
+ */
 class MainAppWindow : ApplicationWindow
 {
 
@@ -86,13 +89,23 @@ class MainAppWindow : ApplicationWindow
 		super(application);
 		setTitle("DedicatedSlave");
 		setDefaultSize(800, 600);
+
+		loader.changeLogCallback(delegate(immutable string msg) {
+			import glib.Idle;
+			import std.experimental.logger : info;
+			new Idle({info(msg); return false;}, GPriority.DEFAULT_IDLE, true);
+		}, 1);
+
 		_loader = &loader;
-		loader.changeLogState("Setting up GUI...");
+		loader.changeLogState("Setting up GUI...", 0);
 		setupWindow(loader);
 		showAll();
 		maximize();
 	}
 
+    /**
+     * Setup Window.
+     */
 	void setupWindow(ref GUILoader loader)
 	{
 		Box box = new Box(Orientation.VERTICAL, 10);
@@ -113,7 +126,7 @@ class MainAppWindow : ApplicationWindow
 		box.packStart(new MainStatusbar(), false, false, 0);
 
 		add(box);
-		loader.changeLogState("GUI Initialization Completed!");
+		loader.changeLogState("GUI Initialization Completed!", 0);
 	}
 
 public:

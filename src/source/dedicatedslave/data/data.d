@@ -23,7 +23,7 @@ public:
 
 	bool addInstance(string name, int game)
 	{
-		_loader.changeLogState("Adding a new instance: "~name~" ("~"game"~")");
+		_loader.changeLogState("Adding a new instance: "~name~" ("~"game"~")", 0);
 		GameInstance g;
 		switch( game )
 		{

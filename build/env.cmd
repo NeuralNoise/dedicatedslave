@@ -1,31 +1,31 @@
 @echo off
-title %~n0.%~x0
-cls
+REM https://stackoverflow.com/questions/18742150/how-to-package-all-my-functions-in-a-batch-file-as-a-seperate-file/18743342#18743342
+echo ----------------------------
+echo        dedicatedslave
+echo ----------------------------
+echo.
+echo Usage:   call SCRIPTNAME :FUNCTION PARAM1 PARAM2
+echo Example: call script.cmd :help
+echo.
 
-set sshpublickey=E:\ProgramFiles\Dropbox\_backup\credentials\rsa\alexpc_win\id_rsa.ppk
-set sshprivatekey=E:\ProgramFiles\Dropbox\_backup\credentials\rsa\alexpc_linux\id_rsa.ppk
+set virtualenvname=.venv
 
-set errlvl=%ERRORLEVEL%
-if "%~1" neq "" (
-  2>nul >nul findstr /rc:"^ *:%~1\>" "%~f0" && (
-    shift /1
-    goto %1
-  ) || (
-    >&2 echo ERROR: routine %~1 not found. Usage: call scriptfile.cmd help
-  )
-) else >&2 echo ERROR: missing routine. Usage: call scriptfile.cmd help
-exit /b
+goto %1
 
 :help
+REM code here - recursion and subroutines will complicate the library
+REM use random names for any temp files, and check if they are in use - else pick a different random name
 echo == HELP ==
 echo Usage:   call SCRIPTNAME COMMAND
 echo Example: call script.cmd help
 echo.
 echo == REPO ==
-echo db   - Build
-echo dbf  - Build (Force)
-echo ds   - Start
-exit /b
+echo db    - Build
+echo dbf   - Build (Force)
+echo ds    - Start
+echo dd    - Documentation Build (Doxygen)
+echo check - Check Deps
+goto :eof
 
 :db
 echo executing :db
@@ -35,7 +35,7 @@ echo arg1 = %1
 ::dub build d2sqlite3 --compiler=ldc2
 dub build --compiler=ldc2
 dub build :gui --compiler=ldc2
-exit /b
+goto :eof
 
 :dbf
 echo executing :dbf
@@ -45,7 +45,7 @@ dub build archive --force --compiler=ldc2
 dub build gtk-d:gtkd --force --compiler=ldc2
 dub build --force --compiler=ldc2
 dub build :gui --force --compiler=ldc2
-exit /b
+goto :eof
 
 :ds
 echo executing :ds
@@ -53,4 +53,22 @@ echo arg1 = %1
 echo arg2 = %2
 echo arg3 = %3
 start "" "src\gui\.out\bin\dedicatedslave-gui.exe"
-exit /b %errlvl%
+goto :eof
+
+:dd
+echo executing :dd
+echo arg1 = %1
+echo arg2 = %2
+echo arg3 = %3
+doxygen
+goto :eof
+
+:check
+echo executing :check
+echo arg1 = %1
+echo arg2 = %2
+echo arg3 = %3
+dub --version
+doxygen --version
+gsettings --version
+goto :eof

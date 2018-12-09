@@ -7,21 +7,21 @@ import gtk.ProgressBar;
 class GUILoader : Loader {
 	this(void delegate(immutable string) func)
 	{
-		_func = func;
+		_func[0] = func;
 		super();
 	}
 
-	override void changeLogState(immutable string msg)
+	override void changeLogState(immutable string msg, int index)
 	{
-		super.changeLogState(msg);
-		_func(msg);
+		super.changeLogState(msg, index);
+		_func[index](msg);
 	}
 
-	final void changeLogCallback(void delegate(immutable string) func)
+	final void changeLogCallback(void delegate(immutable string) func, int index)
 	{
-		_func = func;
+		_func[index] = func;
 	}
 
 private:
-	void delegate(immutable string) _func;
+	void delegate(immutable string)[32] _func;
 }

@@ -41,7 +41,7 @@ public:
 	}
 
 	string dumpData(){
-		_loader.changeLogState("Dumping data from database...");
+		_loader.changeLogState("Dumping data from database...", 0);
 		// Read the data from the table lazily
 		ResultRange results = db.execute("SELECT * FROM `instances`");
 		foreach (Row row; results)

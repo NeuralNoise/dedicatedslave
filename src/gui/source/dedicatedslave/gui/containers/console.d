@@ -9,6 +9,8 @@ import gtk.ListStore;
 import gtk.TreeIter;
 import gtkc.gobjecttypes;
 
+import glib.ShellUtils;
+
 import dedicatedslave.gui.loader;
 
 class ConsoleContainer : TextView
@@ -22,7 +24,7 @@ class ConsoleContainer : TextView
 		loader.changeLogCallback(delegate(immutable string msg) {
 			import glib.Idle;
 			new Idle({this.appendText(msg~"\n"); return false;}, GPriority.DEFAULT_IDLE, true);
-		});
+		}, 0);
     }
 
 }
