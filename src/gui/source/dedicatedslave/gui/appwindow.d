@@ -5,9 +5,9 @@ import std.container;
 import stdlib = core.stdc.stdlib : exit;
 
 import gobject.Signals;
+import gobject.ObjectG;
 
 import gdk.Event;
-import gobject.ObjectG;
 
 import gtk.ApplicationWindow;
 import gtk.Application;
@@ -45,7 +45,7 @@ import dedicatedslave.gui.loader;
 import dedicatedslave.gui.containers.list;
 import dedicatedslave.gui.containers.notebook;
 import dedicatedslave.gui.containers.console;
-import dedicatedslave.gui.settingswindow;
+import dedicatedslave.gui.prefs.settingswindow;
 import dedicatedslave.gui.appmenubar;
 import dedicatedslave.gui.apptoolbar;
 import dedicatedslave.gui.appstatusbar;
@@ -121,7 +121,6 @@ class MainAppWindow : ApplicationWindow
 
 		box.packStart(new MainMenuBar(this, accelGroup, loader), false, false, 0);
 		box.packStart(new MainToolbar(this, loader), false, false, 0);
-		
 		box.packStart(left_vbox, true, true, 0);
 		box.packStart(new MainStatusbar(), false, false, 0);
 

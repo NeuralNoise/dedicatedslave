@@ -25,7 +25,7 @@ import gtk.Box;
 import gtk.HBox;
 import gtk.SeparatorMenuItem;
 
-import dedicatedslave.gui.settingswindow;
+import dedicatedslave.gui.prefs.settingswindow;
 import dedicatedslave.gui.appwindow;
 import dedicatedslave.gui.instance.instwindow;
 import dedicatedslave.gui.loader;

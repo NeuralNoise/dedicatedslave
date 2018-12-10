@@ -12,7 +12,7 @@ import gtk.AboutDialog;
 import gtk.MessageDialog;
 import gtk.SeparatorMenuItem;
 
-import dedicatedslave.gui.settingswindow;
+import dedicatedslave.gui.prefs.settingswindow;
 import dedicatedslave.gui.appwindow;
 import dedicatedslave.gui.loader;
 

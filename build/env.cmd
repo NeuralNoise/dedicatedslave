@@ -33,8 +33,8 @@ echo arg1 = %1
 ::dub build archive --compiler=ldc2
 ::dub build gtk-d:gtkd --compiler=ldc2
 ::dub build d2sqlite3 --compiler=ldc2
-dub build --compiler=ldc2
-dub build :gui --compiler=ldc2
+dub build --build debug --compiler=ldc2
+dub build :gui --build debug --compiler=ldc2
 goto :eof
 
 :dbf
@@ -43,6 +43,7 @@ echo arg1 = %1
 echo arg2 = %2
 dub build archive --force --compiler=ldc2
 dub build gtk-d:gtkd --force --compiler=ldc2
+dub build gtk-d:gstreamer --force --compiler=ldc2
 dub build --force --compiler=ldc2
 dub build :gui --force --compiler=ldc2
 goto :eof
@@ -68,6 +69,11 @@ echo executing :check
 echo arg1 = %1
 echo arg2 = %2
 echo arg3 = %3
+dub list
+copy /Y src\gui\data\gsettings\com.enthdev.DedicatedSlave.gschema.xml "C:\Program Files\Gtk-Runtime\share\glib-2.0\schemas"
+glib-compile-schemas "C:\Program Files\Gtk-Runtime\share\glib-2.0\schemas"
+gsettings list-schemas
+gsettings list-relocatable-schemas
 dub --version
 doxygen --version
 gsettings --version

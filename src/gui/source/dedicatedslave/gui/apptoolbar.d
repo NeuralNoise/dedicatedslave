@@ -22,10 +22,11 @@ import gtk.TextView;
 import gtk.ComboBoxText;
 import gtk.VBox;
 import gtk.Box;
+import gtk.Application;
 import gtk.HBox;
 import gtk.SeparatorMenuItem;
 
-import dedicatedslave.gui.settingswindow;
+import dedicatedslave.gui.prefs.settingswindow;
 import dedicatedslave.gui.appwindow;
 import dedicatedslave.gui.instance.instwindow;
 import dedicatedslave.gui.loader;
@@ -36,55 +37,17 @@ class MainToolbar : Toolbar
 		import std.algorithm.comparison : equal;
 		import std.stdio : writefln;
 
-		private GUILoader* _loader;
-		private MainAppWindow _parent;
-		private ToolButton[] _toolbuttons;
-		private string _instancename;
-		private int _type;
-		private Entry e;
-		private TextView t;
-		private Window w;
-		private ComboBoxText c;
-
-		// MainToolbar Constructor
-		this(MainAppWindow parent, ref GUILoader loader)
-		{
-			super();
-			_parent = parent;
-			_loader = &loader;
-			// Initializing the array
-			_toolbuttons = [];
-
-			auto arr = make!(Array!int)([4, 2, 3, 1]);
-			assert(equal(arr[], [4, 2, 3, 1]));
-			
-			ToolButton toolbtn_add = new ToolButton(new Image("list-add", IconSize.BUTTON), "toolbar.add");
-			toolbtn_add.addOnClicked(&onClickedAdd);
-			_toolbuttons ~= toolbtn_add;
-			this.insert(toolbtn_add);
-			ToolButton toolbtn_remove = new ToolButton(new Image("list-remove", IconSize.BUTTON), "toolbar.remove");
-			toolbtn_remove.addOnClicked(&onClickedRemove);
-			_toolbuttons ~= toolbtn_remove;
-			this.insert(toolbtn_remove);
-			ToolButton toolbtn_info = new ToolButton(new Image("dialog-warning", IconSize.BUTTON), "toolbar.info");
-			toolbtn_info.addOnClicked(&onClickedInfo);
-			this.insert(toolbtn_info);
-
-		}
-
-		// startInstance
-		void startInstance()
-		{
-			_parent.startInstance();
-		}
-
-		// updateInstance
-		void updateInstance()
-		{
-			_parent.updateInstance();
-		}
-
 	private:
+
+		GUILoader* _loader;
+		MainAppWindow _parent;
+		ToolButton[] _toolbuttons;
+		string _instancename;
+		int _type;
+		Entry e;
+		TextView t;
+		Window w;
+		ComboBoxText c;
 
 		// onClickedAdd Event
 		void onClickedAdd(ToolButton a)
@@ -180,6 +143,46 @@ class MainToolbar : Toolbar
 			CSGO = 0,
 			Rust = 1,
 			Invalid = -1
+		}
+
+	public:
+
+		// MainToolbar Constructor
+		this(MainAppWindow parent, ref GUILoader loader)
+		{
+			super();
+			_parent = parent;
+			_loader = &loader;
+			// Initializing the array
+			_toolbuttons = [];
+
+			auto arr = make!(Array!int)([4, 2, 3, 1]);
+			assert(equal(arr[], [4, 2, 3, 1]));
+			
+			ToolButton toolbtn_add = new ToolButton(new Image("list-add", IconSize.BUTTON), "toolbar.add");
+			toolbtn_add.addOnClicked(&onClickedAdd);
+			_toolbuttons ~= toolbtn_add;
+			this.insert(toolbtn_add);
+			ToolButton toolbtn_remove = new ToolButton(new Image("list-remove", IconSize.BUTTON), "toolbar.remove");
+			toolbtn_remove.addOnClicked(&onClickedRemove);
+			_toolbuttons ~= toolbtn_remove;
+			this.insert(toolbtn_remove);
+			ToolButton toolbtn_info = new ToolButton(new Image("dialog-warning", IconSize.BUTTON), "toolbar.info");
+			toolbtn_info.addOnClicked(&onClickedInfo);
+			this.insert(toolbtn_info);
+
+		}
+
+		// startInstance
+		void startInstance()
+		{
+			_parent.startInstance();
+		}
+
+		// updateInstance
+		void updateInstance()
+		{
+			_parent.updateInstance();
 		}
 
 	}

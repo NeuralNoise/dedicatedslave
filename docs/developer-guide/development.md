@@ -22,6 +22,8 @@ git clone --depth=1 https://gitlab.com/enthdev/dedicatedslave.git dedicatedslave
 
 ### Windows
 
+https://gstreamer.freedesktop.org/data/pkg/windows/
+
 > You better know what you are doing !!!
 
 1. Using an elevated cmd or powershell command shell, install [dub](https://chocolatey.org/packages/dub), [~~dmd~~](https://chocolatey.org/packages/dmd), [ldc](https://chocolatey.org/packages/ldc) via chocolatey.

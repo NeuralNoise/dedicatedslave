@@ -1,0 +1,532 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright © 2002 Havoc Pennington
+  Copyright © 2002 Jonathan Blandford
+  Copyright © 2003, 2004 Mariano Suárez-Alvarez
+  Copyright © 2005 Kjartan Maraas
+  Copyright © 2005 Tony Tsui
+  Copyright © 2006 Guilherme de S. Pastore
+  Copyright © 2009, 2010 Behdad Esfahbod
+  Copyright © 2008, 2010 Christian Persch
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+  Modified and adapted from gnome-terminal for use with Tilix by Gerald Nunn
+-->
+<schemalist gettext-domain="DedicatedSlave">
+
+   <!-- Theme variants -->
+   <enum id='com.enthdev.DedicatedSlave.ThemeVariant'>
+    <value nick='system' value='0'/>
+    <value nick='light'  value='1'/>
+    <value nick='dark'   value='2'/>
+  </enum>
+
+  <!-- Background Image Options -->
+  <enum id='com.enthdev.DedicatedSlave.Background.Image.Mode'>
+    <value nick='scale' value='0'/>
+    <value nick='tile' value='1'/>
+    <value nick='center' value='2'/>
+    <value nick='stretch' value='3'/>
+  </enum>
+
+  <!-- Background Image Scaling Options, note these
+       options mirror the cairo_filter_t options covered
+       in the documentation at the link below. Also note that
+       selecting higher quality algorithms will produce better
+       results but at the expense of performance, particularly
+       when re-sizing windows.
+   -->
+  <enum id='com.enthdev.DedicatedSlave.Background.Image.Scale'>
+    <value nick='fast' value='0'/>
+    <value nick='good' value='1'/>
+    <value nick='best' value='2'/>
+    <value nick='nearest' value='3'/>
+    <value nick='bilinear' value='4'/>
+  </enum>
+
+  <enum id='com.enthdev.DedicatedSlave.Bell.Mode'>
+    <value nick='none' value='0'/>
+    <value nick='sound' value='1'/>
+    <value nick='icon' value='2'/>
+    <value nick='icon-sound' value='3'/>
+  </enum>
+
+  <!-- Second Instance Options -->
+  <enum id='com.enthdev.DedicatedSlave.NewInstance.Mode'>
+    <value nick='new-window' value ='0'/>
+    <value nick='new-session' value ='1'/>
+    <value nick='split-right' value ='2'/>
+    <value nick='split-down' value ='3'/>
+    <value nick='focus-window' value='4'/>
+  </enum>
+
+  <!-- Terminal Title Options -->
+  <enum id='com.enthdev.DedicatedSlave.Terminal.Title'>
+    <value nick='normal' value ='0'/>
+    <value nick='small' value ='1'/>
+    <value nick='none' value ='2'/>
+  </enum>
+
+  <!-- Cursor -->
+  <enum id='com.enthdev.DedicatedSlave.Cursor.BlinkMode'>
+    <value nick='system' value='0'/>
+    <value nick='on' value='1'/>
+    <value nick='off' value='2'/>
+  </enum>
+  <enum id='com.enthdev.DedicatedSlave.Cursor.Shape'>
+    <value nick='block' value='0'/>
+    <value nick='ibeam' value='1'/>
+    <value nick='underline' value='2'/>
+  </enum>
+
+  <enum id='com.enthdev.DedicatedSlave.Text.BlinkMode'>
+    <value nick='never' value='0'/>
+    <value nick='focused' value='1'/>
+    <value nick='unfocused' value='2'/>
+    <value nick='always' value='3'/>
+  </enum>
+
+   <enum id='com.enthdev.DedicatedSlave.CJKWidth'>
+    <value nick='narrow' value='1'/>
+    <value nick='wide'   value='2'/>
+  </enum>
+
+  <enum id='com.enthdev.DedicatedSlave.EraseBinding'>
+    <value nick='auto' value='0'/>
+    <value nick='ascii-backspace' value='1'/>
+    <value nick='ascii-delete' value='2'/>
+    <value nick='delete-sequence' value='3'/>
+    <value nick='tty' value='4'/>
+  </enum>
+
+  <enum id='com.enthdev.DedicatedSlave.ExitAction'>
+    <value nick='close' value='0'/>
+    <value nick='restart' value='1'/>
+    <value nick='hold' value='2'/>
+  </enum>
+
+  <!-- Quadrant enum, used for badge position -->
+  <enum id='com.enthdev.DedicatedSlave.Quadrant'>
+    <value nick='northwest' value = '0'/>
+    <value nick='northeast' value = '1'/>
+    <value nick='southwest' value = '2'/>
+    <value nick='southeast' value = '3'/>
+  </enum>
+
+  <!-- Alignment enum -->
+  <enum id='com.enthdev.DedicatedSlave.Alignment'>
+    <value nick='left' value = '0'/>
+    <value nick='center' value = '1'/>
+    <value nick='right' value = '2'/>
+  </enum>
+
+  <enum id='com.gexperts.Window.Style'>
+    <value nick='normal' value='0'/>
+    <value nick='disable-csd' value='1'/>
+    <value nick='disable-csd-hide-toolbar' value='2'/>
+    <value nick='borderless' value='3'/>
+  </enum>
+
+  <!-- Position enum, used for tab position -->
+  <enum id='com.enthdev.DedicatedSlave.Position'>
+    <value nick='left' value = '0'/>
+    <value nick='right' value = '1'/>
+    <value nick='top' value = '2'/>
+    <value nick='bottom' value = '3'/>
+  </enum>
+
+  <!-- Position enum, used for quake position -->
+  <enum id='com.enthdev.DedicatedSlave.QuakePosition'>
+    <value nick='top' value = '0'/>
+    <value nick='bottom' value = '1'/>
+  </enum>
+
+  <!-- Global settings -->
+  <schema id="com.enthdev.DedicatedSlave.Settings" path="/com/enthdev/DedicatedSlave/">
+
+    <key name="window-state" type="i">
+      <default>0</default>
+      <summary>The window state (maximized, minimized, etc) to restore</summary>
+      <description>Saves the last window state on exit and restores it upon new invocation</description>
+    </key>
+    <key name="window-save-state" type="b">
+      <default>false</default>
+      <summary>If true, the window state is saved and restored between invocations</summary>
+      <description>If true, saves the last window state on exit and restores it upon new invocation</description>
+    </key>
+    <key name="window-style" enum="com.gexperts.Window.Style">
+      <default>'normal'</default>
+      <summary>Style to use for displaying the tilix window</summary>
+      <description>The style to use for displaying the tilix window, enables disabling Client-Side_Decorations.</description>
+    </key>
+    <key name="app-title" type="s">
+      <default>'${appName}: ${sessionName}'</default>
+      <summary>The application title that is used</summary>
+      <description>The title to use for the application, can be composed of literal strings and supported tokens.</description>
+    </key>
+    <key name="auto-hide-mouse" type="b">
+      <default>false</default>
+      <summary>Whether to automatically hide the mouse pointer when typing</summary>
+      <description>If true, the mouse pointer is hidden when the user starts typing and shown again when interaction with the mouse occurs.</description>
+    </key>
+    <key name="prompt-on-new-session" type="b">
+      <default>false</default>
+      <summary>Whether to prompt for session settings or use defaults</summary>
+      <description>If true, when creating a new session a prompt will appear to pick the session name and profile used.</description>
+    </key>
+    <key name="prompt-on-close" type="b">
+      <default>true</default>
+      <summary>Whether to prompt on close when multiple sessions are active</summary>
+      <description>If true, a prompt is shown confirming closing the window when multiple sessions are active.</description>
+    </key>
+    <key name="prompt-on-close-process" type="b">
+      <default>true</default>
+      <summary>Whether to prompt on close when processes are still running</summary>
+      <description>If true, a prompt is shown confirming closing the window when processes are running.</description>
+    </key>
+    <key name="prompt-on-delete-profile" type="b">
+      <default>true</default>
+      <summary>Whether to prompt on profile deletion</summary>
+      <description>If true, a prompt is shown confirming the deletion of a profile.</description>
+    </key>
+    <key name="session-name" type="s">
+      <default>'Default'</default>
+      <summary>The default name to use for a session</summary>
+      <description>The default name of the session, terminal variables can be used in which case the active terminal resolves the variables.</description>
+    </key>
+    <key name="enable-transparency" type="b">
+      <default>true</default>
+      <summary>Whether transparency is enabled</summary>
+      <description>If true, transparency is enabled in terminals.</description>
+    </key>
+    <key name="terminal-title-style" enum="com.enthdev.DedicatedSlave.Terminal.Title">
+      <default>'normal'</default>
+      <summary>The style to use for terminal titles</summary>
+      <description>Which style to use for terminal titles, normal, small or none.</description>
+    </key>
+    <key name="terminal-title-show-when-single" type="b">
+      <default>true</default>
+      <summary>Show the terminal title even if its the only terminal</summary>
+      <description>When enabled, the terminal title bar will remain visible when only a single terminal exists in the session</description>
+    </key>
+    <key name="enable-wide-handle" type="b">
+      <default>false</default>
+      <summary>Whether splitters use a narrow (default) or wide handle</summary>
+      <description>If true, splitters between terminals use a wide handle. Only supported in GTK 2.16 and later.</description>
+    </key>
+    <key name="close-with-last-session" type="b">
+      <default>true</default>
+      <summary>Whether the window should close when the last session is closed</summary>
+      <description>If false, when the last session is closed, a new session is opened.</description>
+    </key>
+    <key name="use-overlay-scrollbar" type="b">
+      <default>true</default>
+      <summary>If true, uses an overlay scrollbar instead of a separate widget</summary>
+      <description>If true, uses an overlay scrollbar instead of a separate widget if GTK is 3.22 or greater.</description>
+    </key>
+    <!-- Dark Theme -->
+    <key name="theme-variant" enum="com.enthdev.DedicatedSlave.ThemeVariant">
+      <default>'system'</default>
+      <summary>Which theme variant to use</summary>
+    </key>
+    <!-- Second Instance Options -->
+    <key name="new-instance-mode" enum="com.enthdev.DedicatedSlave.NewInstance.Mode">
+        <default>'new-window'</default>
+        <summary>Default behavior when opening a second instance of Tilix</summary>
+    </key>
+    <!-- Notification Options -->
+    <key name="notify-on-process-complete" type="b">
+      <default>true</default>
+      <summary>Whether to notify when a process is completed</summary>
+      <description>If true, notifications will be sent when non-visible processes complete in terminals.</description>
+    </key>
+    <!-- Menubar Accelerator -->
+    <key name="menu-accelerator-enabled" type="b">
+      <default>false</default>
+      <summary>Whether the standard GTK shortcut for menubar access is enabled</summary>
+      <description>Normally you can access the menubar with F10. This can also be customized via gtkrc (gtk-menu-bar-accel = "whatever"). This option allows the standard menubar accelerator to be disabled.</description>
+    </key>
+    <!-- Middle-Click Close -->
+    <key name="middle-click-close" type="b">
+      <default>false</default>
+      <summary>Whether clicking the middle mouse button closes the terminal</summary>
+      <description>When true, clicking the middle mouse button on the terminal title bar will close it.</description>
+    </key>
+    <!-- Scroll with mousewheel and control -->
+    <key name="control-scroll-zoom" type="b">
+      <default>false</default>
+      <summary>Whether the control key and the mouse wheel zooms the terminal</summary>
+      <description>When true, using the control key with the mouse scroll wheel will zoom the terminal in and out.</description>
+    </key>
+    <!-- Accelerators Enabled-->
+    <key name="accelerators-enabled" type="b">
+      <default>true</default>
+      <summary>Whether accelerators for shortcuts are enabled</summary>
+      <description>When this is false, accelerators are disabled and any accelerators set will be ignored.</description>
+    </key>
+    <!-- Unsafe Paste, cribbed from Pantheon -->
+    <key name="unsafe-paste-alert" type="b">
+      <default>true</default>
+      <summary>Alert the user about unsafe paste</summary>
+      <description>Warn the user when pasting a command into the terminal that might be considered unsafe.</description>
+    </key>
+    <key name="paste-strip-first-char" type="b">
+      <default>false</default>
+      <summary>Strip the first character from a paste when comment or variable declaration</summary>
+      <description>If true, if the first character is a comment (#) or a variable declaration($) it will be stripped on paste.</description>
+    </key>
+    <key name="paste-advanced-default" type="b">
+      <default>false</default>
+      <summary>Use the advanced paste as the default paste</summary>
+      <description>If true, the advanced paste dialog is always used when paste is activated.</description>
+    </key>
+    <key name="copy-on-select" type="b">
+      <default>false</default>
+      <summary>Automatically copy selected text to clipboard</summary>
+      <description>If true, when text is selected in the terminal it is automatically copied to the clipboard.</description>
+    </key>
+    <!-- Search Options -->
+    <key name="search-default-match-case" type="b">
+      <default>false</default>
+      <summary>Whether to match case</summary>
+      <description>If true, searches will be case sensitive.</description>
+    </key>
+    <key name="search-default-match-entire-word" type="b">
+      <default>false</default>
+      <summary>Whether to match the entire word</summary>
+      <description>If true, search must be the entire word in order to be considered a match.</description>
+    </key>
+    <key name="search-default-match-as-regex" type="b">
+      <default>false</default>
+      <summary>Whether to match using regular expressions</summary>
+      <description>If true, the search will be done treating the search text as a regular expression.</description>
+    </key>
+    <key name="search-default-wrap-around" type="b">
+      <default>true</default>
+      <summary>Whether searches wrap the terminal buffer</summary>
+      <description>If true, a search will move to the bottom of the terminal buffer when it reaches the top item and vice versa.</description>
+    </key>
+    <key name="encodings" type="as">
+      <!-- Translators: Please note that this has to be a list of
+           valid encodings (which are to be taken from the list in src/encoding.c).
+           It has to include UTF-8 the list entries themselves are not to be
+           translated. This is provided for customization of the default encoding
+           menu; see bug 144810 for an use case. In most cases, this should be
+           left alone.
+      -->
+      <default>["UTF-8"]</default>
+      <summary>List of available encodings</summary>
+      <description>
+        A subset of possible encodings are presented in
+        the Encoding submenu. This is a list of encodings
+        to appear there.
+      </description>
+    </key>
+    <key name="warn-vte-config-issue" type="b">
+      <default>true</default>
+      <summary>Whether to warn if the VTE configuration issue is detected</summary>
+      <description>If true, a dialog will be displayed warning the user that VTE is not configured correctly.</description>
+    </key>
+    <key name="focus-follow-mouse" type="b">
+      <default>false</default>
+      <summary>Whether the focus follows the mouse</summary>
+      <description>If true, a terminal will automatically be focused when the mouse moves over it.</description>
+    </key>
+    <!-- Background Image -->
+    <key name="background-image" type="s">
+      <default>''</default>
+      <summary>Path of the background image</summary>
+      <description>The path of the image to use for the background, requires transparency support.</description>
+    </key>
+    <key name="background-image-mode" enum="com.enthdev.DedicatedSlave.Background.Image.Mode">
+      <default>'scale'</default>
+      <summary>The mode to use when rendering the background image</summary>
+      <description>Whether the background image is rendered scaled, tiled or centered in Tilix.</description>
+    </key>
+    <key name="background-image-scale" enum="com.enthdev.DedicatedSlave.Background.Image.Scale">
+      <default>'bilinear'</default>
+      <summary>The algorithm to use when scaling the background image</summary>
+      <description>The cairo filter algorithm used to scale the background image, performance will deteroriate with higher quality.</description>
+    </key>
+    <key name="password-include-return" type="b">
+      <default>true</default>
+      <summary>Whether to include return character with password</summary>
+      <description>If true, when selecting a password to submit to the terminal a return character will automatically be added.</description>
+    </key>
+    <key name="bookmark-include-return" type="b">
+      <default>true</default>
+      <summary>Whether to include return character with bookmark</summary>
+      <description>If true, when selecting a bookmark to submit to the terminal a return character will automatically be added.</description>
+    </key>
+    <key name="sidebar-on-right" type="b">
+      <default>false</default>
+      <summary>Whether the sidebar should be on the right</summary>
+      <description>If true, the sidebar will be attached to the right side of the window rather than the left.</description>
+    </key>
+    <!-- Quake Options -->
+    <key name="quake-height-percent" type="i">
+      <range min="10" max="100" />
+      <default>40</default>
+      <summary>The height of the terminal as a percent of the screen height</summary>
+      <description>When in quake mode, the height of the terminal as a percentage of the screen height.</description>
+    </key>
+    <key name="quake-width-percent" type="i">
+      <range min="10" max="100" />
+      <default>100</default>
+      <summary>The width of the terminal as a percent of the screen width</summary>
+      <description>When in quake mode, the width of the terminal as a percentage of the screen width.</description>
+    </key>
+    <key name="quake-active-monitor" type="b">
+      <default>true</default>
+      <summary>Display the terminal on the active monitor</summary>
+      <description>When in quake mode, always display the terminal on the active monitor.</description>
+    </key>
+    <key name="quake-specific-monitor" type="i">
+      <default>0</default>
+      <summary>Display the terminal on a specific monitor if available</summary>
+      <description>When in quake mode, display the terminal on the specified monitor.</description>
+    </key>
+    <key name="quake-show-on-all-workspaces" type="b">
+      <default>true</default>
+      <summary>Display the terminal on all workspaces</summary>
+      <description>When in quake mode, display the terminal on all workspaces.</description>
+    </key>
+    <!--
+    <key name="quake-disable-animation" type="b">
+      <default>false</default>
+      <summary>Use a hint to request animation be disabled</summary>
+      <description>When true, the quake window will have a hint to request that animation be disabled by the window manager.</description>
+    </key>
+    -->
+    <key name="quake-hide-lose-focus" type="b">
+      <default>false</default>
+      <summary>Hide the quake window when focus is lost</summary>
+      <description>When true, the quake window will be hidden automatically when focus is lost.</description>
+    </key>
+    <key name="quake-hide-lose-focus-delay" type="i">
+      <default>150</default>
+      <summary>Delay used to hide the quake window when focus is lost</summary>
+      <description>Delay used to hide the quake window so that quick changes in focus do not hide the window.</description>
+    </key>
+    <key name="quake-alignment" enum="com.enthdev.DedicatedSlave.Alignment">
+      <default>'center'</default>
+      <summary>The alignment of the quake window</summary>
+      <description>The alignment of the quake window when the width is less then 100%.</description>
+    </key>
+    <key name="quake-hide-headerbar" type="b">
+      <default>false</default>
+      <summary>Hide the headerbar when running in quake mode</summary>
+      <description>When true, the headerbar of the quake window will be hidden.</description>
+    </key>
+    <key name="quake-tab-position" enum="com.enthdev.DedicatedSlave.Position">
+      <default>'top'</default>
+      <summary>The position where the tabs are displayed in Quake mode</summary>
+      <description>Determines where the tabs are displayed relative to the notebook in quake mode.</description>
+    </key>
+    <key name="quake-keep-on-top" type="b">
+      <default>true</default>
+      <summary>When true the quake window is always kept on top</summary>
+      <description>When true, the quake window will be kept on top of all other windows.</description>
+    </key>
+    <key name="quake-window-position" enum="com.enthdev.DedicatedSlave.QuakePosition">
+      <default>'top'</default>
+      <summary>The position where the window is displayed in Quake mode</summary>
+      <description>Determines where the window is displayed relative to the screen in quake mode.</description>
+    </key>
+
+    <!-- Advanced Paste Options -->
+    <key name="advanced-paste-replace-tabs" type="b">
+      <default>false</default>
+      <summary>Replace tabs with spaces</summary>
+      <description>If true, replaces tabs with spaces in advanced paste.</description>
+    </key>
+    <key name="advanced-paste-space-count" type="i">
+      <default>4</default>
+      <summary>The number of spaces to use when replacing tabs</summary>
+      <description>When using advanced paste, the number of spaces to use when replacing tabs.</description>
+    </key>
+    <key name="advanced-paste-replace-crlf" type="b">
+      <default>false</default>
+      <summary>Replace CRLF with LF</summary>
+      <description>If true, replaces CRLF sequences with LF in advanced paste.</description>
+    </key>
+    <key name="recent-session-files" type="as">
+      <default>[]</default>
+      <summary>List of recent session files used</summary>
+      <description>A list of recently used session files, used for quick loading.</description>
+    </key>
+
+    <!-- Setting to include proxy if set in envonment variables-->
+    <key name="set-proxy-env" type="b">
+      <default>true</default>
+      <summary>Set proxy environment variables</summary>
+      <description>If true, sets the proxy environment variables if configured in Gnome.</description>
+    </key>
+
+    <!-- Control-click titlebar -->
+    <key name="control-click-titlebar" type="b">
+      <default>false</default>
+      <summary>Whether to require control modifier to edit title on click</summary>
+      <description>If true, editing the title requires using the control key modifier when clicking.</description>
+    </key>
+   
+  </schema>
+
+  <!-- SettingsList base schema -->
+
+  <schema id="com.enthdev.DedicatedSlave.SettingsList">
+    <key name="list" type="as">
+      <default>[]</default>
+    </key>
+    <key name="default" type="s">
+      <default>''</default>
+    </key>
+  </schema>
+
+  <!-- Profiles list schema -->
+
+  <schema id="com.enthdev.DedicatedSlave.ProfilesList"
+          extends="com.enthdev.DedicatedSlave.SettingsList"
+          path="/com/enthdev/DedicatedSlave/profiles/">
+    <override name="list">['2b7c4080-0ddd-46c5-8f23-563fd3ba789d']</override>
+    <override name="default">'2b7c4080-0ddd-46c5-8f23-563fd3ba789d'</override>
+  </schema>
+
+  <!-- A terminal profile -->
+
+  <schema id="com.enthdev.DedicatedSlave.Profile">
+    <key name="visible-name" type="s">
+      <default l10n="messages" context="visible-name">'Unnamed'</default>
+      <summary>Human-readable name of the profile</summary>
+      <description>Human-readable name of the profile.</description>
+    </key>
+  </schema>
+
+  <!-- Keybinding settings -->
+  <!--
+    Note that key names match to action names used by Tilix. Since
+    GSettings doesn't allow the '.' in key names, the action name is divided
+    between the prefix and id using the hyphen. The first hyphen is treated as
+    the separator, subsequent hyphens are treated as part of the action id.
+
+    The intent is to use localization on the prefix and id to show more
+    friendly descriptors to users in the GUI that allows modifying these names.
+  -->
+
+  <schema id="com.enthdev.DedicatedSlave.Keybindings" path="/com/enthdev/DedicatedSlave/keybindings/">
+    
+  </schema>
+</schemalist>
