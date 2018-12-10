@@ -23,10 +23,12 @@ import dedicatedslave.gui.loader;
 import dedicatedslave.gui.i18n.l10n;
 import dedicatedslave.gui.constants;
 
-
-int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int nShowCmd)
+version(windows)
 {
-	return main( ["a", "b"] );
+    int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int nShowCmd)
+    {
+        return main( ["a", "b"] );
+    }
 }
 
 int main(string[] args)
