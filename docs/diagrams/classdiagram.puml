@@ -1,0 +1,100 @@
+@startuml classdiagram
+!include classdiagram.iuml
+
+' floating note
+' 	**Raspberry muffins with crumbs**
+' 	====
+' 	Fluffy raspberry muffins with crumb pieces (Streusel) on top.
+
+' 	From chefkoch.de by Brotfan63
+' 	====
+' 	CLASSDIAGRAMCHANGELOG
+' end note
+
+
+
+ProcessManager o- Student
+ProcessManager *-- Loader
+Loader o- ConfigManager
+ConfigManager o- DataSystem
+
+class DataSystem {
+	{field} - _gameInstances : GameInstance[]
+	{field} - _loader : Loader
+	{method} + this(Loader loader)
+	{method} + void init(string data)
+	{method} + bool addInstance(string name, int game)
+	{method} + bool removeInstance(string name)
+	{method} + string getBinFile(string name)
+	{method} + GameInstance[] getInstances()
+	{method} + GameInstance getInstance(string instanceName)
+}
+
+class ConfigManager {
+	{field} - _loader : Loader
+    {field} - _initConfig : string
+	{method} + this(Loader loader)
+	{method} + void serialize()
+	{method} + string getInitConfig()
+}
+
+class ProcessManager {
+	{field} - pipeproc_handler : ProcessPipes
+	{field} - _thread_handler : Thread
+	{field} - _loader : Loader
+    {field} - _cmd : string
+	{field} - buf : OutBuffer
+	{method} + this(Loader loader)
+	{method} + void runCmdThread(string runcmd)
+	{method} + string getBufferString()
+	{method} - createNewProcess()
+	{method} - void runCmd()
+}
+
+class Loader {
+	{field} + exe_path : string
+	{field} + instances_path : string
+	{field} + instances_path2 : string
+	{field} - DataSystem _dataSystem
+	{field} - DatabaseSystem _database
+	{field} - ProcessManager _processMngr
+	{field} - ConfigManager _configMngr
+	{field} - string _selectedInstance
+	{method} + this()
+	{method} + void setSelectedInstance(string selectedInstance)
+	{method} + string getInstanceName()
+	{method} + void changeLogState(immutable string msg, int index)
+	{method} + bool addInstance(string instanceName, int game)
+	{method} + bool addInstanceData(string instanceName, int game)
+	{method} + bool removeInstance(string instanceName)
+	{method} + GameInstance getInstance(string instanceName)
+	{method} + GameInstance[] fetchInstances()
+	{method} + bool startInstance(string instanceName)
+	{method} + bool updateInstance(string name)
+	{method} - void installEnvironment()
+}
+
+class Student {
+	.. Simple Getter ..
+	+ getName()
+	+ getAddress()
+	.. Some setter ..
+	+ setName()
+	.. Other ..
+	{method} + this(Loader loader)
+	{method} + void runCmdThread(string runcmd)
+	{method} + string getBufferString()
+	{method} - createNewProcess()
+	{method} - void runCmd()
+	{field} - ProcessPipes pipeproc_handler
+	{field} - Thread _thread_handler
+	{field} - Loader _loader
+    {field} - string _cmd
+	{field} - OutBuffer buf
+	__ private data __
+	int age
+	-- encrypted --
+	String password
+}
+
+@enduml

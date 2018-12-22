@@ -10,23 +10,26 @@ import dedicatedslave.data.models;
 
 
 class DataSystem {
-	this(Loader loader)
-	{
-		_loader = loader;
-	}
+
+private:
+
+	GameInstance[] _gameInstances;
+	Loader _loader;
 
 public:
+
+	this(Loader loader){
+		_loader = loader;
+	}
 
 	void init(string data){
 
 	}
 
-	bool addInstance(string name, int game)
-	{
+	bool addInstance(string name, int game){
 		_loader.changeLogState("Adding a new instance: "~name~" ("~"game"~")", 0);
 		GameInstance g;
-		switch( game )
-		{
+		switch(game){
 			case 0:
 				g = new CsgoGameInstance(name);
 				break;
@@ -41,25 +44,19 @@ public:
 		return false;
 	}
 
-	bool removeInstance(string name)
-	{
+	bool removeInstance(string name){
 		import std.algorithm : remove;
-		foreach(i, GameInstance g; _gameInstances)
-		{
-			if(g.getName() == name)
-			{
+		foreach(i, GameInstance g; _gameInstances){
+			if(g.getName() == name){
 				remove(_gameInstances, i);
 			}
 		}
 		return false;
 	}
 
-	string getBinFile(string name)
-	{
-		foreach(i, GameInstance g; _gameInstances)
-		{
-			if(g.getName() == name)
-			{
+	string getBinFile(string name){
+		foreach(i, GameInstance g; _gameInstances){
+			if(g.getName() == name){
 				return _gameInstances[i].getBinFile();
 			}
 		}
@@ -70,8 +67,13 @@ public:
 		return _gameInstances;
 	}
 
-private:
-	GameInstance[] _gameInstances;
-	Loader _loader;
-
+	GameInstance getInstance(string instanceName){
+		foreach(i, GameInstance g; _gameInstances){
+			if(g.getName() == instanceName){
+				return _gameInstances[i];
+			}
+		}
+		return null;
+	}
+	
 }

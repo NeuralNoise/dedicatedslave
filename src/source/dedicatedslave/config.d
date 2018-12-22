@@ -21,19 +21,23 @@ import dedicatedslave.loader;
 // Serialization
 class ConfigManager {
 
+private:
+
+    Loader _loader;
+    string _initConfig;
+
+public:
+
     /++
         Config manager constructor.
 
         Params:
             loader = Main class loader.
      +/
-	this(Loader loader)
-	{
+	this(Loader loader){
         _loader = loader;
         _initConfig = `{ "instancesDir": "D:\\ProgramFiles\\ProgramFiles\\DSInstances" }`;
 	}
-
-public:
 
     void serialize(){
         _loader.changeLogState("Parsing config.json...", 0);
@@ -45,10 +49,5 @@ public:
     string getInitConfig(){
         return _initConfig;
     }
-
-
-private:
-    Loader _loader;
-    string _initConfig;
 
 }

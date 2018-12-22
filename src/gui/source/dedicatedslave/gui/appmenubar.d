@@ -16,21 +16,12 @@ import dedicatedslave.gui.prefs.settingswindow;
 import dedicatedslave.gui.appwindow;
 import dedicatedslave.gui.loader;
 
-class MainMenuBar : MenuBar
-{
+class MainMenuBar : MenuBar {
 
-    private GUILoader* _loader;
-    private MainAppWindow _parent;
+private:
 
-    this(MainAppWindow parent, AccelGroup accelGroup, ref GUILoader loader)
-    {
-        super();
-        _parent = parent;
-        _loader = &loader;
-        this.append(new FileMenuItem(accelGroup));
-        this.append(new ViewMenuItem(accelGroup));
-        this.append(new HelpMenuItem(accelGroup));
-    }
+    GUILoader* _loader;
+    MainAppWindow _parent;
 
     void onMenuActivate(MenuItem menuItem)
 	{
@@ -154,5 +145,16 @@ class MainMenuBar : MenuBar
             
             setSubmenu(_menu);
         }
+    }
+
+public:
+
+    this(MainAppWindow parent, AccelGroup accelGroup, ref GUILoader loader){
+        super();
+        _parent = parent;
+        _loader = &loader;
+        this.append(new FileMenuItem(accelGroup));
+        this.append(new ViewMenuItem(accelGroup));
+        this.append(new HelpMenuItem(accelGroup));
     }
 }

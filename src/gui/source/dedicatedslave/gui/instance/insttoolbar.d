@@ -30,62 +30,59 @@ import dedicatedslave.gui.appwindow;
 import dedicatedslave.gui.instance.instwindow;
 import dedicatedslave.gui.loader;
 
-class InstanceToolbar : Toolbar
-	{
-		import std.container;
-		import std.algorithm.comparison : equal;
-		import std.stdio : writefln;
+class InstanceToolbar : Toolbar {
+	import std.container;
+	import std.algorithm.comparison : equal;
+	import std.stdio : writefln;
 
-		private GUILoader* _loader;
-		private InstanceWindow _parent;
-		private ToolButton[] _toolbuttons;
-		private string _instancename;
-		private int _type;
-		private Entry e;
-		private TextView t;
-		private Window w;
-		private ComboBoxText c;
+private:
 
-		// MainToolbar Constructor
-		this(InstanceWindow parent, GUILoader* loader)
-		{
-			super();
-			_parent = parent;
-			_loader = loader;
-			// Initializing the array
-			_toolbuttons = [];
+	GUILoader* _loader;
+	InstanceWindow _parent;
+	ToolButton[] _toolbuttons;
+	string _instancename;
+	int _type;
+	Entry e;
+	TextView t;
+	Window w;
+	ComboBoxText c;
 
-			auto arr = make!(Array!int)([4, 2, 3, 1]);
-			assert(equal(arr[], [4, 2, 3, 1]));
-			
-			this.insert(new SeparatorToolItem());
+	// onClickedStart Event
+	void onClickedStart(ToolButton a){
+		_parent.startInstance();
+	}
 
-			ToolButton toolbtn_update = new ToolButton(new Image("system-software-update", IconSize.BUTTON), "toolbar.update");
-			toolbtn_update.addOnClicked(&onClickedUpdate);
-			this.insert(toolbtn_update);
+	// onClickedUpdate Event
+	void onClickedUpdate(ToolButton a){
+		_parent.updateInstance();
+	}
 
-			ToolButton toolbtn_start = new ToolButton(new Image("media-playback-start", IconSize.BUTTON), "toolbar.start");
-			toolbtn_start.addOnClicked(&onClickedStart);
-			this.insert(toolbtn_start);
+public:
 
-			this.insert(new ToolButton(new Image("media-playback-stop", IconSize.BUTTON), "toolbar.stop"));
+	// MainToolbar Constructor
+	this(InstanceWindow parent, GUILoader* loader){
+		super();
+		_parent = parent;
+		_loader = loader;
+		// Initializing the array
+		_toolbuttons = [];
 
-			this.insert(new SeparatorToolItem());
+		auto arr = make!(Array!int)([4, 2, 3, 1]);
+		assert(equal(arr[], [4, 2, 3, 1]));
+		
+		ToolButton toolbtn_update = new ToolButton(new Image("system-software-update", IconSize.BUTTON), "toolbar.update");
+		toolbtn_update.addOnClicked(&onClickedUpdate);
+		this.insert(toolbtn_update);
 
-		}
+		ToolButton toolbtn_start = new ToolButton(new Image("media-playback-start", IconSize.BUTTON), "toolbar.start");
+		toolbtn_start.addOnClicked(&onClickedStart);
+		this.insert(toolbtn_start);
 
-	private:
+		this.insert(new ToolButton(new Image("media-playback-stop", IconSize.BUTTON), "toolbar.stop"));
 
-		// onClickedStart Event
-		void onClickedStart(ToolButton a)
-		{
-			_parent.startInstance();
-		}
-
-		// onClickedUpdate Event
-		void onClickedUpdate(ToolButton a)
-		{
-			_parent.updateInstance();
-		}
+		this.insert(new SeparatorToolItem());
+		//this.insert(new SeparatorToolItem());
 
 	}
+
+}

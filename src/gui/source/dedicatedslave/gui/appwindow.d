@@ -54,20 +54,19 @@ import dedicatedslave.data.models;
 /**
  * Provides the main window
  */
-class MainAppWindow : ApplicationWindow
-{
+class MainAppWindow : ApplicationWindow {
+	
+private:
 
-	private GameInstanceListStore gameListStore;
-	private GUILoader* _loader; // NOT
-	private TreeIter _selectedIter;
+	TreeIter _selectedIter;
+	GameInstanceListStore gameListStore;
+	GUILoader* _loader; // NOT
 
 	/**
 	 * Executed when the user tries to close the window
 	 * @return true to refuse to close the window
 	 */
-	int windowDelete(GdkEvent* event, Widget widget)
-	{
-
+	int windowDelete(GdkEvent* event, Widget widget){
 		debug(events) writefln("TestWindow.widgetDelete : this and widget to delete %X %X",this,window);
 		MessageDialog d = new MessageDialog(
 			this,
@@ -83,31 +82,11 @@ class MainAppWindow : ApplicationWindow
 		d.destroy();
 		return true;
 	}
-	
-	this(Application application, ref GUILoader loader)
-	{
-		super(application);
-		setTitle("DedicatedSlave");
-		setDefaultSize(800, 600);
-
-		loader.changeLogCallback(delegate(immutable string msg) {
-			import glib.Idle;
-			import std.experimental.logger : info;
-			new Idle({info(msg); return false;}, GPriority.DEFAULT_IDLE, true);
-		}, 1);
-
-		_loader = &loader;
-		loader.changeLogState("Setting up GUI...", 0);
-		setupWindow(loader);
-		showAll();
-		maximize();
-	}
 
     /**
      * Setup Window.
      */
-	void setupWindow(ref GUILoader loader)
-	{
+	void setupWindow(ref GUILoader loader){
 		Box box = new Box(Orientation.VERTICAL, 10);
 
 		AccelGroup accelGroup = new AccelGroup();
@@ -130,23 +109,41 @@ class MainAppWindow : ApplicationWindow
 
 public:
 
-	void setSelectedInstance(TreeIter selectedIter)
-	{
+	this(Application application, ref GUILoader loader){
+		super(application);
+		setTitle("DedicatedSlave");
+		setDefaultSize(800, 600);
+
+		loader.changeLogCallback(delegate(immutable string msg) {
+			import glib.Idle;
+			import std.experimental.logger : info;
+			new Idle({info(msg); return false;}, GPriority.DEFAULT_IDLE, true);
+		}, 1);
+
+		_loader = &loader;
+		loader.changeLogState("Setting up GUI...", 0);
+		setupWindow(loader);
+		showAll();
+		maximize();
+	}
+
+	void setSelectedInstance(TreeIter selectedIter){
 		_selectedIter = selectedIter;
 	}
 
-	TreeIter getSelectedInstance()
-	{
+	TreeIter getSelectedInstance(){
 		return _selectedIter;
 	}
 
-	void startInstance()
-	{
+	string getSelectedInstanceName(){
+		return _selectedIter.getValueString(0);
+	}
+
+	void startInstance(){
 		_loader.startInstance(_selectedIter.getValueString(0));
 	}
 
-	void updateInstance()
-	{
+	void updateInstance(){
 		_loader.updateInstance(_selectedIter.getValueString(0));
 	}
 

@@ -1,5 +1,4 @@
 module dedicatedslave.gui.i18n.l10n;
-
 import glib.Internationalization;
 
 void textdomain(string domain) {

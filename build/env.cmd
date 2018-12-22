@@ -23,7 +23,8 @@ echo == REPO ==
 echo db    - Build
 echo dbf   - Build (Force)
 echo ds    - Start
-echo dd    - Documentation Build (Doxygen)
+echo dd    - Documentation Build (Doxygen + PlantUML)
+echo ddd   - Diagram Build (PlantUML)
 echo check - Check Deps
 goto :eof
 
@@ -62,6 +63,16 @@ echo arg1 = %1
 echo arg2 = %2
 echo arg3 = %3
 doxygen
+goto :ddd
+goto :eof
+
+:ddd
+echo executing :ddd
+echo arg1 = %1
+echo arg2 = %2
+echo arg3 = %3
+plantuml -tpng -o output docs/diagrams/*
+plantuml -tsvg -o output docs/diagrams/*
 goto :eof
 
 :check

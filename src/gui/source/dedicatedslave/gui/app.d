@@ -58,9 +58,7 @@ import dedicatedslave.gui.preferences;
 import dedicatedslave.gui.appwindow;
 import dedicatedslave.gui.constants;
 import dedicatedslave.gui.loader;
-
 import dedicatedslave.gui.i18n.l10n;
-
 import dedicatedslave.gui.splashwindow;
 
 static import dedicatedslave.gui.util.array;
