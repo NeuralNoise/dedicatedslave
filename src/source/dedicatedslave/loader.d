@@ -22,51 +22,6 @@ import dedicatedslave.logger;
 
 class Loader {
 
-<<<<<<< HEAD
-=======
-	public string exe_path;
-	public string instances_path;
-	public string instances_path2;
-
-	private DataSystem _dataSystem;
-	private DatabaseSystem _database;
-	private ProcessManager _processMngr;
-	private ConfigManager _configMngr;
-	private string _selectedInstance;
-
-	this()
-	{
-		// TODO: Read this from config.json, not hardcoded
-		instances_path = "D:\\ProgramFiles\\ProgramFiles\\DSInstances\\";
-		exe_path = thisExePath.dirName ~ "\\";
-		
-		// First Run
-		if(!exists(exe_path~DedicatedSlave.realPath)){
-			installEnvironment();
-		}
-
-		_processMngr = new ProcessManager(this);
-		_dataSystem = new DataSystem(this);
-		if(!exists("config.json")){
-			changeLogState("Trying to create a config.json file", 0);
-			std.file.write("config.json", _configMngr.getInitConfig());
-		}
-		_configMngr = new ConfigManager(this);
-
-		// Serialize Data
-		_configMngr.serialize();
-
-		// Init SQLite Database
-		if(!exists("database.db")){
-			_database = new DatabaseSystem(this);
-			_database.init();
-		}else{
-			_database = new DatabaseSystem(this);
-		}
-		_dataSystem.init(_database.dumpData());
-	}
-
->>>>>>> linux-dev
 private:
 
 	DataSystem _dataSystem;
@@ -98,15 +53,12 @@ private:
 
 			auto archive_file = new TarGzArchive(read(steamcmd_filename));
 
-<<<<<<< HEAD
-=======
 			version(windows){
-				folder = "steamcmd\\";
+				folversion(windows)der = "steamcmd\\";
 			}
 			changeLogState("Create directory "~exe_path~DedicatedSlave.tmpPath~folder, 0);
 			mkdir(exe_path~DedicatedSlave.tmpPath~folder);
 
->>>>>>> linux-dev
 			foreach (memberFile; archive_file.directories){
 				changeLogState("Create directory "~memberFile.path~"...",0);
 				mkdir(exe_path~DedicatedSlave.tmpPath~folder~memberFile.path);
