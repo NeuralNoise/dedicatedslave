@@ -90,8 +90,6 @@ private:
 
 			auto archive_file = new TarGzArchive(read(steamcmd_filename));
 
-			
-
 			version(windows){
 				folder = "steamcmd\\";
 			}
