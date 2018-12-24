@@ -41,6 +41,8 @@ git clone --depth=1 https://gitlab.com/enthdev/dedicatedslave.git dedicatedslave
 
 ## Build
 
+sudo apt-get install libsqlite3-dev
+
 ### Windows
 
 ```bash

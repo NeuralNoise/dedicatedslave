@@ -1,5 +1,4 @@
 # dedicatedslave
-
 /testdocs
 
 database.db
@@ -11,11 +10,11 @@ database.db
 # Compiled Dynamic libraries
 *.so
 *.dylib
-#*.dll
+*.dll
 
 # Compiled Static libraries
 *.a
-#*.lib
+*.lib
 
 # Executables
 *.exe

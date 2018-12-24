@@ -22,6 +22,51 @@ import dedicatedslave.logger;
 
 class Loader {
 
+<<<<<<< HEAD
+=======
+	public string exe_path;
+	public string instances_path;
+	public string instances_path2;
+
+	private DataSystem _dataSystem;
+	private DatabaseSystem _database;
+	private ProcessManager _processMngr;
+	private ConfigManager _configMngr;
+	private string _selectedInstance;
+
+	this()
+	{
+		// TODO: Read this from config.json, not hardcoded
+		instances_path = "D:\\ProgramFiles\\ProgramFiles\\DSInstances\\";
+		exe_path = thisExePath.dirName ~ "\\";
+		
+		// First Run
+		if(!exists(exe_path~DedicatedSlave.realPath)){
+			installEnvironment();
+		}
+
+		_processMngr = new ProcessManager(this);
+		_dataSystem = new DataSystem(this);
+		if(!exists("config.json")){
+			changeLogState("Trying to create a config.json file", 0);
+			std.file.write("config.json", _configMngr.getInitConfig());
+		}
+		_configMngr = new ConfigManager(this);
+
+		// Serialize Data
+		_configMngr.serialize();
+
+		// Init SQLite Database
+		if(!exists("database.db")){
+			_database = new DatabaseSystem(this);
+			_database.init();
+		}else{
+			_database = new DatabaseSystem(this);
+		}
+		_dataSystem.init(_database.dumpData());
+	}
+
+>>>>>>> linux-dev
 private:
 
 	DataSystem _dataSystem;
@@ -45,27 +90,35 @@ private:
 		download(DedicatedSlave.urlPlatform, steamcmd_filename);
 		
 		changeLogState("Extracting " ~ steamcmd_filename ~ "...", 0);
-		if(steamcmd_extension == ".gz")
-		{
+
+		string folder = "steamcmd/";
+		if(steamcmd_extension == ".gz"){
 			import archive.targz;
 			import std.stdio: writeln;
 
 			auto archive_file = new TarGzArchive(read(steamcmd_filename));
-			changeLogState("Create directory "~exe_path~DedicatedSlave.tmpPath~"steamcmd\\", 0);
-			mkdir(exe_path~DedicatedSlave.tmpPath~"steamcmd\\");
 
+<<<<<<< HEAD
+=======
+			version(windows){
+				folder = "steamcmd\\";
+			}
+			changeLogState("Create directory "~exe_path~DedicatedSlave.tmpPath~folder, 0);
+			mkdir(exe_path~DedicatedSlave.tmpPath~folder);
+
+>>>>>>> linux-dev
 			foreach (memberFile; archive_file.directories){
 				changeLogState("Create directory "~memberFile.path~"...",0);
-				mkdir(exe_path~DedicatedSlave.tmpPath~"steamcmd\\"~memberFile.path);
+				mkdir(exe_path~DedicatedSlave.tmpPath~folder~memberFile.path);
 				changeLogState("Set attributes for "~memberFile.path~"...", 0);
-				setAttributes(exe_path~DedicatedSlave.tmpPath~"steamcmd\\"~memberFile.path, memberFile.permissions);
+				setAttributes(exe_path~DedicatedSlave.tmpPath~folder~memberFile.path, memberFile.permissions);
 			}
 
 			foreach (memberFile; archive_file.files){
 				changeLogState("Extracting "~memberFile.path~"...", 0);
-				write(exe_path~DedicatedSlave.tmpPath~"steamcmd\\"~memberFile.path, memberFile.data);
+				write(exe_path~DedicatedSlave.tmpPath~folder~memberFile.path, memberFile.data);
 				changeLogState("Set attributes for "~memberFile.path~"...", 0);
-				setAttributes(exe_path~DedicatedSlave.tmpPath~"steamcmd\\"~memberFile.path, memberFile.permissions);
+				setAttributes(exe_path~DedicatedSlave.tmpPath~folder~memberFile.path, memberFile.permissions);
 			}
 		}
 		if(steamcmd_extension == ".zip"){
@@ -73,18 +126,18 @@ private:
 			import std.stdio: writeln;
 
 			auto archive_file = new ZipArchive(read(steamcmd_filename));
-			changeLogState("Create directory "~exe_path~DedicatedSlave.tmpPath~"steamcmd\\", 0);
-			mkdir(exe_path~DedicatedSlave.tmpPath~"steamcmd\\");
+			changeLogState("Create directory "~exe_path~DedicatedSlave.tmpPath~folder, 0);
+			mkdir(exe_path~DedicatedSlave.tmpPath~folder);
 
 			foreach (memberFile; archive_file.directories){
 				changeLogState("Create directory "~memberFile.path~"...", 0);
-				mkdir(exe_path~DedicatedSlave.tmpPath~"steamcmd\\"~memberFile.path);
+				mkdir(exe_path~DedicatedSlave.tmpPath~folder~memberFile.path);
 				changeLogState("Set attributes for "~memberFile.path~"...", 0);
 			}
 
 			foreach (memberFile; archive_file.files){
 				changeLogState("Extracting "~memberFile.path~"...", 0);
-				write(exe_path~DedicatedSlave.tmpPath~"steamcmd\\"~memberFile.path, memberFile.data);
+				write(exe_path~DedicatedSlave.tmpPath~folder~memberFile.path, memberFile.data);
 				changeLogState("Set attributes for "~memberFile.path~"...", 0);
 			}
 		}
