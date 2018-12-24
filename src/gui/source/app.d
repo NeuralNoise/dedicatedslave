@@ -23,10 +23,8 @@ import dedicatedslave.gui.loader;
 import dedicatedslave.gui.i18n.l10n;
 import dedicatedslave.gui.constants;
 
-version(windows)
-{
-    int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int nShowCmd)
-    {
+version(windows){
+    int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int nShowCmd){
         return main( ["a", "b"] );
     }
 }
@@ -135,7 +133,8 @@ int main(string[] args)
 
 private:
 
-	void outputVersions() {
+	void outputVersions()
+    {
         //import gx.gtk.vte: getVTEVersion, checkVTEFeature, TerminalFeature, isVTEBackgroundDrawEnabled;
         import gtk.Version: Version;
 
