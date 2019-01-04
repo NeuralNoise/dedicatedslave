@@ -54,7 +54,7 @@ private:
 			auto archive_file = new TarGzArchive(read(steamcmd_filename));
 
 			version(windows){
-				folversion(windows)der = "steamcmd\\";
+				folder = "steamcmd\\";
 			}
 			changeLogState("Create directory "~exe_path~DedicatedSlave.tmpPath~folder, 0);
 			mkdir(exe_path~DedicatedSlave.tmpPath~folder);
